@@ -32,8 +32,9 @@ Para cada ativo da carteira, o sistema exibe:
 ### 🧮 Cálculo Automático de Imposto de Renda
 - Cálculo automático do **ganho líquido** nas vendas.
 - Considera histórico de compra e venda.
-- Calcula **IR a pagar** segundo regras da Receita Federal:
-  - Isenção de vendas abaixo de R$ 20.000 no mês.
+- Calcula **IR a pagar** segundo regras da Receita Federal para as modalidades Day Trade e Swing Trade:
+  - Isenção de vendas abaixo de R$ 20.000 no mês para a modalidade Swing Trade.
+  - Cálculo automático de Imposto de Renda Retido na Fonte (IRRF)
   - Descontos de taxas e prejuízos acumulados.
 
 ---
@@ -52,8 +53,16 @@ Para cada ativo da carteira, o sistema exibe:
 ---
 
 ## 📷 Capturas de Tela (opcional)
-> Adicione aqui prints quando desejar.
 
+![Tela inicial](<./src/docs//images/Captura de tela 2025-11-30 015730.png>)
+
+![Minha carteira](<./src/docs/images/Captura de tela 2025-11-30 015710.png>)
+
+![Minhas ordens](<./src/docs/images/Captura de tela 2025-11-30 015743.png>)
+
+![Rebalanceamento da carteira](<./src/docs/images/Captura de tela 2025-11-30 015800.png>)
+
+![Imposto de renda](./src/docs/images/image.png)
 ---
 
 ## ⚙️ Como Executar o Projeto

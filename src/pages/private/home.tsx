@@ -25,16 +25,6 @@ export default function HomePage() {
         const resultadoEhZero = parseFloat(resultadoPercentual ?? "0") === 0
 
         const { data: planningInfo, isLoading: isLoadingPlanningInfo, isError: isErrorPlanningInfo } = usePlanning(userId, 0)
-        // const { mutate: fetchPlanning, data: planningInfo, isPending: isLoadingPlanningInfo, isError: isErrorPlanningInfo } = usePlanning()
-    
-        // useEffect(()=> {
-        //     if(userId) {
-        //         fetchPlanning({
-        //             userId, 
-        //             investment: 0
-        //         })
-        //     }
-        // }, [userId])
 
         const isLoading = isLoadingPortifolioInfo || isLoadingPlanningInfo
         const isError = isErrorPortifolioInfo || isErrorPlanningInfo
@@ -42,7 +32,7 @@ export default function HomePage() {
         if(isError) return <p className="text-my-foreground-secondary p-6">Erro durante o carregamento!</p>
 
     return(
-        <div className="flex gap-3 flex-wrap flex-1 w-full h-full text-my-foreground-secondary p-3">
+        <div className="flex gap-3 flex-wrap flex-1 w-full h-full text-my-foreground-secondary p-3 overflow-y-hidden">
             <LoadingSpinner isLoading={isLoading} size="xl" className="text-lime-base/50" />
 
             <Display className="w-full">
@@ -71,7 +61,7 @@ export default function HomePage() {
                 </DisplayBody>
             </Display>
 
-            <div className="grid grid-flow-col grid-cols-2 w-full h-full">
+            <div className="grid grid-flow-col grid-cols-2 w-full h-[calc(100dvh-215px)] overflow-y-auto custom-scrollbar-div">
                 <CarteiraDeAlocacaoCompleta 
                     ativosIniciais={dataChartMinhaCarteiraDeAtivos(
                                 planningInfo?.ativosPlanejadosConsolidados ?? []

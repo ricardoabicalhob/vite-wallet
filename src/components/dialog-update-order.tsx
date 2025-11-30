@@ -9,6 +9,7 @@ import { showErrorToast, showSuccesToast } from "@/utils/toasts"
 import { calcularIRRFsobreOrdemDeVendaEmCentavos } from "@/utils/taxes.utils"
 import { converterValorDeCentavosParaReais } from "@/utils/assets.utils"
 import { useUpdateOrder } from "@/queries/orders"
+import { formatCentavosToReal, parseInputToCentavos } from "@/utils/formatters"
 
 interface DialogUpdateOrderProps {
     ordem :OrderPresenter
@@ -24,31 +25,44 @@ export function DialogUpdateOrder({
 
     const [ assetSymbol, setAssetSymbol ] = useState<string>()
     const [ amountToUpdate, setAmountToUpdate ] = useState<number>()
-    const [ unitPriceToUpdate, setUnitPriceToUpdate ] = useState<string>()
-    const [ feesToUpdate, setFeesToUpdate ] = useState<string>()
-    const [ taxesToUpdate, setTaxesToUpdate ] = useState<string>()
+    const [ centavosUnitPriceToUpdate, setCentavosUnitPriceToUpdate ] = useState<string>("")
+    const [ centavosFeesToUpdate, setCentavosFeesToUpdate ] = useState<string>("")
+    const [ centavosTaxesToUpdate, setCentavosTaxesToUpdate ] = useState<string>("")
     const [ orderDate, setOrderDate ] = useState<Date | undefined>()
     const [ operationTypeToUpdate, setOperationTypeToUpdate ] = useState<"compra" | "venda">("compra")
     const [ orderIdToUpdate, setOrderIdToUpdate ] = useState<string>("")
 
     const { mutate: updateOrder } = useUpdateOrder()
 
+
+    const handleChangeUnitPriceToUpdate = (e :React.ChangeEvent<HTMLInputElement>) => {
+        const centavos = parseInputToCentavos(e.target.value)
+        setCentavosUnitPriceToUpdate(centavos)
+    }
+
+    const handleChangeFeesToUpdate = (e :React.ChangeEvent<HTMLInputElement>) => {
+        const centavos = parseInputToCentavos(e.target.value)
+        setCentavosFeesToUpdate(centavos)
+    }
+
+
+
     function handleSubmitUpdate(e :React.FormEvent) {
         e.preventDefault()
         
-        if(!amountToUpdate || !unitPriceToUpdate || !feesToUpdate || !taxesToUpdate || !orderIdToUpdate) {
+        if(!amountToUpdate || !centavosUnitPriceToUpdate || !centavosFeesToUpdate || !centavosTaxesToUpdate || !orderIdToUpdate) {
             showErrorToast("Preencha todos os campos")
             return
         }
 
         let irrfToSaveToUpdate :number = 0
 
-        const feesInCents :number = parseFloat(feesToUpdate || "0") * 100
-        const unitPriceInCents :number = parseFloat(unitPriceToUpdate || "0") * 100
+        const feesInCents :number = parseFloat(centavosFeesToUpdate || "0") * 100
+        const unitPriceInCents :number = parseInt(parseInputToCentavos(centavosUnitPriceToUpdate))
 
         if(operationTypeToUpdate === "venda") {
-            irrfToSaveToUpdate = calcularIRRFsobreOrdemDeVendaEmCentavos(amountToUpdate || 0, parseFloat(unitPriceToUpdate || "0"))
-            setTaxesToUpdate(converterValorDeCentavosParaReais(irrfToSaveToUpdate).toString())
+            irrfToSaveToUpdate = calcularIRRFsobreOrdemDeVendaEmCentavos(amountToUpdate || 0, parseFloat(centavosUnitPriceToUpdate || "0"))
+            setCentavosTaxesToUpdate(converterValorDeCentavosParaReais(irrfToSaveToUpdate).toString())
         }
 
         const orderToUpdate :OrderToUpdate = {
@@ -78,9 +92,12 @@ export function DialogUpdateOrder({
                 setAssetSymbol(ordem.symbol)
                 setOrderDate(ordem.orderDate)
                 setAmountToUpdate(ordem.amount)
-                setUnitPriceToUpdate(((ordem.unitPrice || 0) / 100).toString())
-                setFeesToUpdate(((ordem.fees || 0) / 100).toString())
-                setTaxesToUpdate(((ordem.taxes || 0) / 100).toString())
+                setCentavosUnitPriceToUpdate(parseInputToCentavos(ordem.unitPrice.toString()))
+                setCentavosFeesToUpdate(parseInputToCentavos(ordem.fees.toString()))
+                setCentavosTaxesToUpdate(parseInputToCentavos(ordem.taxes.toString()))
+                // setUnitPriceToUpdate(((ordem.unitPrice || 0) / 100).toString())
+                // setCentavosFeesToUpdate(((ordem.fees || 0) / 100).toString())
+                // setCentavosTaxesToUpdate(((ordem.taxes || 0) / 100).toString())
                 setOrderIdToUpdate(ordem.id)    
                 setOperationTypeToUpdate(ordem.operationType)
             }
@@ -128,17 +145,17 @@ export function DialogUpdateOrder({
                     </div>
                     <div className="grid gap-3 text-my-foreground-secondary">
                         <Label htmlFor={`unitprice-${ordem.id}`} className="pl-1">Preço unitário</Label>
-                        <Input placeholder="0,00" className="bg-my-background-secondary selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] ml-0.5 hide-webkit-spinners" type="number" step={"0.01"} value={unitPriceToUpdate} onChange={(e)=> setUnitPriceToUpdate(e.target.value === '' ? undefined : e.target.value)} id={`unitprice-${ordem.id}`} name="unitprice" />
+                        <Input placeholder="0,00" className="bg-my-background-secondary selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] ml-0.5 hide-webkit-spinners" type="text" value={formatCentavosToReal(centavosUnitPriceToUpdate)} onChange={handleChangeUnitPriceToUpdate} id={`unitprice-${ordem.id}`} name="unitprice" />
                     </div>
                     <div className="grid gap-3 text-my-foreground-secondary">
                         <Label htmlFor={`fees-${ordem.id}`} className="pl-1">Taxas operacionais</Label>
-                        <Input placeholder="0,00" className="bg-my-background-secondary selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] ml-0.5 hide-webkit-spinners" type="number" step={"0.01"} value={feesToUpdate} onChange={(e)=> setFeesToUpdate(e.target.value === '' ? undefined : e.target.value)} id={`fees-${ordem.id}`} name="fees" />
+                        <Input placeholder="0,00" className="bg-my-background-secondary selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] ml-0.5 hide-webkit-spinners" type="text" value={formatCentavosToReal(centavosFeesToUpdate)} onChange={handleChangeFeesToUpdate} id={`fees-${ordem.id}`} name="fees" />
                     </div>
                     {
                         operationTypeToUpdate === "venda" &&
                         <div className="grid gap-3 text-my-foreground-secondary">
                             <Label htmlFor="taxes-1" className="pl-1">Imposto de Renda Retido na Fonte (IRRF)</Label>
-                            <span className="ml-1 px-2.5 py-2 rounded-md select-none text-sm text-my-foreground-secondary bg-my-background-secondary cursor-no-drop">{taxesToUpdate?.toString().replace(".", ",")}</span>
+                            <span className="ml-1 px-2.5 py-2 rounded-md select-none text-sm text-my-foreground-secondary bg-my-background-secondary cursor-no-drop">{formatCentavosToReal(centavosTaxesToUpdate)}</span>
                         </div>
                     }
                     <Separator className="bg-my-background-secondary" />

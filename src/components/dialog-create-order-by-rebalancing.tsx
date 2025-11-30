@@ -12,6 +12,7 @@ import type { AssetType, OperationType, OrderCreate } from "@/interfaces/order.i
 import { showErrorToast, showSuccesToast } from "@/utils/toasts"
 import { useCreateOrder } from "@/queries/orders"
 import { useFocusOnOpen } from "@/hooks/useFocusOnOpen"
+import { formatCentavosToReal, parseInputToCentavos } from "@/utils/formatters"
 
 interface DialogCreateOrderByRebalancingProps {
     userId :string
@@ -32,9 +33,9 @@ export function DialogCreateOrderByRebalancing({
     const [ date, setDate ] = useState<Date | undefined>(new Date())
     const [ assetSymbol, setAssetSymbol ] = useState<string>(initialAssetSymbol)
     const [ amount, setAmount ] = useState<number>()
-    const [ unitPrice, setUnitPrice ] = useState<string>()
-    const [ fees, setFees ] = useState<string>()
-    const [ taxes, setTaxes ] = useState<string>()
+    const [ centavosUnitPrice, setCentavosUnitPrice ] = useState<string>("")
+    const [ centavosFees, setCentavosFees ] = useState<string>("")
+    const [ centavosTaxes, setCentavosTaxes ] = useState<string>("")
     const [ operationType, setOperationType ] = useState<"Compra" | "Venda">(initialOperationType)
     const [ assetType, setAssetType ] = useState<"Acao" | "Fii" | "Cripto">("Acao")
 
@@ -42,19 +43,30 @@ export function DialogCreateOrderByRebalancing({
 
     const quantidadeInputRef = useRef<HTMLInputElement>(null)
 
+
+    const handleChangeUnitPrice = (e :React.ChangeEvent<HTMLInputElement>) => {
+        const centavos = parseInputToCentavos(e.target.value)
+        setCentavosUnitPrice(centavos)
+    }
+
+    const handleChangeFees = (e :React.ChangeEvent<HTMLInputElement>) => {
+        const centavos = parseInputToCentavos(e.target.value)
+        setCentavosFees(centavos)
+    }
+
+
     function resetForm() {
         setDate(new Date())
         setAssetSymbol("")
         setAmount(0)
-        setUnitPrice("0.00")
-        setFees("0.00")
-        setTaxes("0.00")
+        setCentavosUnitPrice("0.00")
+        setCentavosFees("0.00")
+        setCentavosTaxes("0.00")
         setOperationType("Compra")
         setAssetType("Acao")
     }
 
     function handleSubmit(e :React.FormEvent) {
-        console.log(date, assetType, assetSymbol, amount, operationType, userId)
         e.preventDefault()
         if(!date || !assetType || !amount || !operationType || !userId) {
             throw new Error("Preencha todos os campos!")
@@ -63,8 +75,10 @@ export function DialogCreateOrderByRebalancing({
         let averagePrice :number | null = null
         let irrfToSave :number = 0
 
-        const feesInCents :number = Math.round(parseFloat(fees || "0") * 100)
-        const unitPriceInCents :number = parseFloat(unitPrice || "0") * 100
+        // const feesInCents :number = Math.round(parseFloat(centavosFees || "0") * 100)
+        // const unitPriceInCents :number = parseFloat(centavosUnitPrice || "0") * 100
+        const unitPriceInCents :number = parseInt(parseInputToCentavos(centavosUnitPrice))
+        const feesInCents :number = parseInt(parseInputToCentavos(centavosFees))
 
         // if(operationType === "Venda") {
         //     averagePrice = obterPrecoMedioBrutoPagoNoAtivoEmCentavos(ordens || [], userId, removeTrailingF(assetSymbol))
@@ -142,18 +156,18 @@ export function DialogCreateOrderByRebalancing({
                         </div>
                         <div className="flex flex-col gap-3">
                             <Label className="px-1 text-my-foreground-secondary">Preço unitário</Label>
-                            <Input type="number" placeholder="0,00" min={0} step="0.01" value={unitPrice} onChange={(e) => setUnitPrice(e.target.value)} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
+                            <Input type="text" placeholder="0,00" min={0} value={formatCentavosToReal(centavosUnitPrice)} onChange={handleChangeUnitPrice} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
                         </div>
                     </div>
 
                     <div className="bg-my-background-secondary p-4 rounded-lg grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-3">
                             <Label className="px-1 text-my-foreground-secondary">Taxas</Label>
-                            <Input type="number" placeholder="0,00" min={0} step="0.01" value={fees} onChange={(e) => setFees(e.target.value)} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
+                            <Input type="text" placeholder="0,00" min={0} value={formatCentavosToReal(centavosFees)} onChange={handleChangeFees} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
                         </div>
                         <div className="flex flex-col gap-3">
                             <Label className="px-1 text-my-foreground-secondary">IRRF</Label>
-                            <span className="ml-1 px-2.5 py-2 rounded-md select-none text-sm text-my-foreground bg-my-background cursor-no-drop">{taxes ? taxes.replace(".", ",") : "0,00"}</span>
+                            <span className="ml-1 px-2.5 py-2 rounded-md select-none text-sm text-my-foreground bg-my-background cursor-no-drop">{formatCentavosToReal(centavosTaxes)}</span>
                         </div>
                     </div>
                     

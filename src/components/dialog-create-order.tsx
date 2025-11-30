@@ -19,6 +19,7 @@ import ComboboxAssetsForSale from "./combobox-assets-for-sale"
 import { useFocusOnOpen } from "@/hooks/useFocusOnOpen"
 import { useUpdateLogoOnSale } from "@/hooks/useUpdateLogoOnSale"
 import { useClearSymbolOnOperationChange } from "@/hooks/useClearSymbolOnOperationChange"
+import { formatCentavosToReal, parseInputToCentavos } from "@/utils/formatters"
 
 interface DialogCreateOrderProps {
     userId :string
@@ -36,17 +37,27 @@ export function DialogCreateOrder({
     const [ assetSymbol, setAssetSymbol ] = useState<string>()
     const [ assetLogourl, setAssetLogourl ] = useState<string>()
     const [ amount, setAmount ] = useState<number>()
-    const [ unitPrice, setUnitPrice ] = useState<string>()
-    const [ fees, setFees ] = useState<string>()
-    const [ taxes, setTaxes ] = useState<string>()
+    const [ centavosFees, setCentavosFees ] = useState<string>("")
+    const [ centavosTaxes, setCentavosTaxes ] = useState<string>("")
     const [ operationType, setOperationType ] = useState<"Compra" | "Venda">("Compra")
     const [ assetType, setAssetType ] = useState<"Acao" | "Fii" | "Cripto">("Acao")
-
-    // const [ isValidatingAsset, setIsValidatingAsset ] = useState(false)
+    const [ centavosUnitPrice, setCentavosUnitPrice ] = useState<string>("")
 
     const assetSymbolInputRef = useRef<HTMLInputElement>(null)
 
     const { mutate: createOrder } = useCreateOrder()
+
+
+    const handleChangeUnitPrice = (e :React.ChangeEvent<HTMLInputElement>) => {
+        const centavos = parseInputToCentavos(e.target.value)
+        setCentavosUnitPrice(centavos)
+    }
+
+    const handleChangeFees = (e :React.ChangeEvent<HTMLInputElement>) => {
+        const centavos = parseInputToCentavos(e.target.value)
+        setCentavosFees(centavos)
+    }
+
 
     async function validateSymbol(symbol :string) {
         const token = import.meta.env.VITE_BRAPI_API_KEY
@@ -74,9 +85,9 @@ export function DialogCreateOrder({
         setAssetSymbol("")
         setAssetLogourl("")
         setAmount(0)
-        setUnitPrice("0.00")
-        setFees("0.00")
-        setTaxes("0.00")
+        setCentavosUnitPrice("")
+        setCentavosFees("0.00")
+        setCentavosTaxes("0.00")
         setOperationType("Compra")
         setAssetType("Acao")
     }
@@ -87,8 +98,8 @@ export function DialogCreateOrder({
             throw new Error("Preencha todos os campos!")
         }
 
-        const feesInCents :number = Math.round(parseFloat(fees || "0") * 100)
-        const unitPriceInCents :number = parseFloat(unitPrice || "0") * 100
+        const feesInCents :number = parseInt(parseInputToCentavos(centavosFees))
+        const unitPriceInCents :number = parseInt(parseInputToCentavos(centavosUnitPrice))
 
         const orderToCreate :OrderCreate = {
             orderDate: date,
@@ -189,18 +200,18 @@ export function DialogCreateOrder({
                         </div>
                         <div className="flex flex-col gap-3">
                             <Label className="px-1 text-my-foreground-secondary">Preço unitário</Label>
-                            <Input type="number" placeholder="0,00" min={0} step="0.01" value={unitPrice} onChange={(e) => setUnitPrice(e.target.value)} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
+                            <Input type="text" placeholder="R$ 0,00" min={0} value={formatCentavosToReal(centavosUnitPrice)} onChange={handleChangeUnitPrice} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
                         </div>
                     </div>
 
                     <div className="bg-my-background-secondary p-4 rounded-lg grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-3">
                             <Label className="px-1 text-my-foreground-secondary">Taxas operacionais</Label>
-                            <Input type="number" placeholder="0,00" min={0} step="0.01" value={fees} onChange={(e) => setFees(e.target.value)} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
+                            <Input type="text" placeholder="0,00" min={0} step="0.01" value={formatCentavosToReal(centavosFees)} onChange={handleChangeFees} onFocus={e => e.target.select()} className="bg-my-background selection:bg-blue-500 text-my-foreground-secondary border-0 focus:!ring-[1px] hide-webkit-spinners" />
                         </div>
                         <div className="flex flex-col gap-3">
                             <Label className="px-1 text-my-foreground-secondary">IRRF</Label>
-                            <span className="ml-1 px-2.5 py-2 rounded-md select-none text-sm text-my-foreground bg-my-background cursor-no-drop">{taxes ? taxes.replace(".", ",") : "0,00"}</span>
+                            <span className="ml-1 px-2.5 py-2 rounded-md select-none text-sm text-my-foreground bg-my-background cursor-no-drop">{formatCentavosToReal(centavosTaxes)}</span>
                         </div>
                     </div>
                     

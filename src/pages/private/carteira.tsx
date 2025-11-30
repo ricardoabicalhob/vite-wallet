@@ -72,7 +72,7 @@ export default function MinhaCarteiraDeAtivos() {
                     </div>
             }
             
-            <div className="flex gap-3 justify-start flex-wrap w-full">
+            <div className="flex gap-3 justify-start flex-wrap w-full overflow-y-auto custom-scrollbar-div">
                 {ativos?.map(ativo => (
                     <CardAsset
                         key={ativo.assetSymbol}

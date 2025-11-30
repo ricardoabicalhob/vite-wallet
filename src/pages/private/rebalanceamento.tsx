@@ -139,7 +139,7 @@ export default function Rebalanceamento() {
                 
                 <div className="flex w-full h-full py-3">
 
-                    <div className="flex grow w-full h-[calc(100dvh-235px)] overflow-y-auto overflow-x-hidden border-[#29292E] border rounded-md p-2 custom-scrollbar-div">
+                    <div className="flex grow w-full h-[calc(100dvh-235px)] overflow-x-hidden border-[#29292E] border rounded-md p-2 overflow-y-auto custom-scrollbar-div">
 
                         <TableRecommendedAsset
                             ativosPlanejadosConsolidados={
