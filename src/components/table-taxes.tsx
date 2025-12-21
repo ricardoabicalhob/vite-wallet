@@ -14,16 +14,18 @@ export function TableTaxes({
     return(
         <Table>
             <TableHeader className="sticky top-0 bg-my-background z-10">
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Código</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Quantidade</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Taxas</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">IRRF</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Receita bruta</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Receita líquida operacional</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Receita líquida contábil</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Custo de aquisição</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ganho de capital</TableHead>
+                <TableRow>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Código</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Quantidade</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Taxas</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">IRRF</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Receita bruta</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Receita líquida operacional</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Receita líquida contábil</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%] whitespace-normal">Custo de aquisição</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ganho de capital</TableHead>
+                </TableRow>
             </TableHeader>
             <TableBody>
                 {taxesInfo?.ativosConsolidados

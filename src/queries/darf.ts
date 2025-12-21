@@ -5,20 +5,19 @@ import darfService from "@/services/darfService"
 import { queryClient } from "@/services/queryClient"
 import type { DarfI, DarfToUpdateI } from "@/interfaces/darf.interface"
 
+type InputInfo = { userId :string, selectedYear :number, selectedMonth :number, tradeModality :TradeModality }
 
-export const getDarfs = (userId :string, token :string | undefined) => {
+export const getDarfs = (userId :string) => {
     return useQuery<DarfI[]>({
         queryKey: darfKeys.list(userId),
-        queryFn: () => darfService.getDarfs(userId, token),
+        queryFn: () => darfService.getDarfs(userId),
         staleTime: 1000 * 60 * 5
     })
 }
 
-type InputCreateDarf = { userId :string, selectedYear :number, selectedMonth :number, tradeModality :TradeModality, token :string }
-
 export const useCreateDarf = () => {
-    return useMutation<DarfI , Error, InputCreateDarf>({
-        mutationFn: ({ userId, selectedYear, selectedMonth: month, tradeModality: modality, token } :InputCreateDarf) => darfService.createDarf(userId, selectedYear, month, modality, token),
+    return useMutation<DarfI , Error, InputInfo>({
+        mutationFn: ({ userId, selectedYear, selectedMonth: month, tradeModality: modality } :InputInfo) => darfService.createDarf(userId, selectedYear, month, modality),
         onSuccess: (createdDarf, {userId, selectedYear, selectedMonth, tradeModality}) => {
             queryClient.invalidateQueries({ queryKey: darfKeys.all })
             createdDarf && queryClient.setQueryData(darfKeys.create(userId, selectedYear, selectedMonth, tradeModality), createdDarf)
@@ -32,12 +31,10 @@ export const useCreateDarf = () => {
     })
 }
 
-type InputDeleteDarf = {id :string, token :string}
-
 export const useDeleteDarf = () => {
-    return useMutation<DarfI, Error, InputDeleteDarf>({
-        mutationFn: (input :InputDeleteDarf) => darfService.deleteDarf(input.id, input.token),
-        onSuccess: (deletedDarf, {id}) => {
+    return useMutation<DarfI, Error, string>({
+        mutationFn: (id :string) => darfService.deleteDarf(id),
+        onSuccess: (deletedDarf, id) => {
             queryClient.invalidateQueries({ queryKey: darfKeys.all })
             deletedDarf && queryClient.setQueryData(darfKeys.delete(id), deletedDarf)
         },
@@ -50,12 +47,9 @@ export const useDeleteDarf = () => {
     })
 }
 
-
-type InputUpdateDarf = { darfToUpdate :DarfToUpdateI, token :string | undefined }
-
 export const useUpdateDarf = () => {
-    return useMutation<DarfI | undefined, Error, InputUpdateDarf>({
-        mutationFn: ({ darfToUpdate, token } :InputUpdateDarf) => darfService.updateDarf(darfToUpdate, token),
+    return useMutation<DarfI | undefined, Error, DarfToUpdateI>({
+        mutationFn: (darfToUpdate :DarfToUpdateI) => darfService.updateDarf(darfToUpdate),
         onSuccess: (updatedDarf) => {
             queryClient.invalidateQueries({ queryKey: darfKeys.all })
             updatedDarf && queryClient.setQueryData(darfKeys.update(updatedDarf), updatedDarf)
@@ -69,11 +63,25 @@ export const useUpdateDarf = () => {
     })
 }
 
-type InputCancelPagamentoDarf = { id :string, token :string | undefined }
+export const useUpdatePagamentoDarf = () => {
+    return useMutation<DarfI | undefined, Error, string>({
+        mutationFn: (id :string) => darfService.updatePagamento(id),
+        onSuccess: (updatedDarf) => {
+            queryClient.invalidateQueries({ queryKey: darfKeys.all })
+            updatedDarf && queryClient.setQueryData(darfKeys.update(updatedDarf), updatedDarf)
+        },
+        onError: (error) => {
+            console.error('Falha ao atualizar o pagamento da DARF', error)
+        },
+        onSettled: () => {
+            //isso é executado independente do sucesso ou falha
+        } 
+    })
+}
 
 export const useCancelPagamentoDarf = () => {
-    return useMutation<DarfI | undefined, Error, InputCancelPagamentoDarf>({
-        mutationFn: ({ id, token } :InputCancelPagamentoDarf) => darfService.cancelPagamento(id, token),
+    return useMutation<DarfI | undefined, Error, string>({
+        mutationFn: (id :string) => darfService.cancelPagamento(id),
         onSuccess: (updatedDarf) => {
             queryClient.invalidateQueries({ queryKey: darfKeys.all })
             updatedDarf && queryClient.setQueryData(darfKeys.update(updatedDarf), updatedDarf)

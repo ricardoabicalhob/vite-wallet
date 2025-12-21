@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import Calendar24 from "./calendar-24"
 import ComboboxAssetType from "./combobox-asset-type"
 import ComboboxOperationType from "./combobox-operation-type"
@@ -12,7 +12,7 @@ import { removeTrailingF } from "@/utils/assets.utils"
 import type { AssetType, OperationType, OrderCreate } from "@/interfaces/order.interface"
 import { showErrorToast, showSuccesToast } from "@/utils/toasts"
 import { useCreateOrder } from "@/queries/order"
-import api from "@/services/api"
+import { publicApi } from "@/services/api"
 import type { ApiResponse } from "@/interfaces/quote.interface"
 import { AxiosError } from "axios"
 import ComboboxAssetsForSale from "./combobox-assets-for-sale"
@@ -20,7 +20,6 @@ import { useFocusOnOpen } from "@/hooks/useFocusOnOpen"
 import { useUpdateLogoOnSale } from "@/hooks/useUpdateLogoOnSale"
 import { useClearSymbolOnOperationChange } from "@/hooks/useClearSymbolOnOperationChange"
 import { formatCentavosToReal, parseInputToCentavos } from "@/utils/formatters"
-import { AuthContext } from "@/contexts/auth.context"
 
 interface DialogCreateOrderProps {
     userId :string
@@ -31,9 +30,6 @@ export function DialogCreateOrder({
     userId,
     assetsForSale
 } :DialogCreateOrderProps) {
-
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token
 
     const [ isCreateDialogOpen, setIsCreateDialogOpen ] = useState(false)
 
@@ -69,7 +65,7 @@ export function DialogCreateOrder({
 
         try {
             // setIsValidatingAsset(true)
-            const response = await api.get(`https://brapi.dev/api/quote/${symbol}?token=${token}`)
+            const response = await publicApi.get(`https://brapi.dev/api/quote/${symbol}?token=${token}`)
             const data :ApiResponse = response.data
 
             setAssetSymbol(data.results[0].symbol)
@@ -121,7 +117,7 @@ export function DialogCreateOrder({
             userId: userId,
             averagePrice: null
         }
-        createOrder({orderToCreate, token}, {
+        createOrder(orderToCreate, {
             onError: (errorCreateOrder) => {
                 showErrorToast(errorCreateOrder.message)
             },

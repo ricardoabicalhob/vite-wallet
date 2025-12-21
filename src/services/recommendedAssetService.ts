@@ -3,14 +3,10 @@ import api from "./api"
 import { AxiosError } from "axios"
 
 const recommendedAssetService = { 
-    createRecommendedAsset: async (recommendedAsset :RecommendedAssetCreate, token :string | undefined) => {
+    createRecommendedAsset: async (recommendedAsset :RecommendedAssetCreate) => {
         if(!recommendedAsset) { throw new Error("Erro durante a criação do ativo recomendado") }
         try {
-            const response = await api.post('/ativorecomendado', recommendedAsset, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.post('/ativorecomendado', recommendedAsset)
             
             return response.data as RecommendedAssetPresenter
         } catch (error :unknown) {
@@ -31,14 +27,10 @@ const recommendedAssetService = {
             throw new Error('Erro inesperado')
         }
     },
-    deleteRecommendedAsset: async (id :string, token :string | undefined) => {
+    deleteRecommendedAsset: async (id :string) => {
         if(!id) { throw new Error("Erro ao deletar o ativo!") }
         try {
-            const response = await api.delete(`/ativorecomendado?id=${id}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.delete(`/ativorecomendado?id=${id}`)
 
             return response.data
         } catch (error :unknown) {
@@ -59,14 +51,10 @@ const recommendedAssetService = {
             throw new Error('Erro inesperado')
         }
     },
-    updatePlannedPercentage: async (recommendedAssetToUpdate :RecommendedAssetUpdatePlannedPercentage, token :string | undefined) => {
+    updatePlannedPercentage: async (recommendedAssetToUpdate :RecommendedAssetUpdatePlannedPercentage) => {
         if(!recommendedAssetToUpdate) { throw new Error("Erro ao atualizar o ativo recomendado!") }
         try {
-            const response = await api.patch('/ativorecomendado', recommendedAssetToUpdate, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.patch('/ativorecomendado', recommendedAssetToUpdate)
             
             return response.data as RecommendedAssetPresenter
         } catch (error :unknown) {

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { DisplayIcon } from "./display"
 import { Input } from "./ui/input"
@@ -11,12 +11,11 @@ import { dataChartMinhaCarteiraDeAtivosPlanejada, obterQuantidadeAtualDeAcoesDeU
 import { showErrorToast, showSuccesToast } from "@/utils/toasts"
 import type { RecommendedAssetCreate } from "@/interfaces/recommendedAsset.interface"
 import { AxiosError } from "axios"
-import api from "@/services/api"
+import { publicApi } from "@/services/api"
 import { useCreateRecommendedAsset } from "@/queries/recommendedAsset"
 import { Porcento } from "./moeda-percentual"
 import type { AtivoPlanejadoConsolidado } from "@/interfaces/ativoPlanejadoConsolidado.interface"
 import { MiniLoadingSpinner } from "./mini-loading-spinner"
-import { AuthContext } from "@/contexts/auth.context"
 
 interface DialogRecommendedAssetProps {
     userId :string
@@ -31,9 +30,6 @@ export function DialogCreateRecommendedAsset({
     ativosPlanejadosConsolidados,
     myHeritage,
 } :DialogRecommendedAssetProps) {
-
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token
 
     const [ isCreateDialogOpen, setIsCreateDialogOpen ] = useState(false)
 
@@ -71,7 +67,7 @@ export function DialogCreateRecommendedAsset({
 
         try {
             setIsValidatingAsset(true)
-            const response = await api.get(`https://brapi.dev/api/quote/${assetSymbolRemovedTrailingF}?token=${token}`)
+            const response = await publicApi.get(`https://brapi.dev/api/quote/${assetSymbolRemovedTrailingF}?token=${token}`)
             const data :ApiResponse = response.data
 
             if(ativosPlanejadosConsolidados.find(ativo => ativo.symbol === data.results[0].symbol)) {
@@ -107,7 +103,7 @@ export function DialogCreateRecommendedAsset({
             userId: userId
         }
 
-        createRecommendedAsset({recommendedAssetToCreate, token}, {
+        createRecommendedAsset(recommendedAssetToCreate, {
             onError: (errorCreateRecommendedAsset) => {
                 showErrorToast(errorCreateRecommendedAsset.message)
             },

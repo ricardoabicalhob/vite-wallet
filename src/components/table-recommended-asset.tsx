@@ -9,8 +9,6 @@ import { TypeOperationIndicator } from "./type-operation_indicator"
 import { AlertDialogMessage } from "./alert-dialog"
 import { AlertDialogTrigger } from "./ui/alert-dialog"
 import { AssetLogo } from "./asset-logo"
-import { useContext } from "react"
-import { AuthContext } from "@/contexts/auth.context"
 
 interface TableRecommendedAssetProps {
     userId :string
@@ -22,24 +20,23 @@ export function TableRecommendedAsset({
     ativosPlanejadosConsolidados
 } :TableRecommendedAssetProps) {
 
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token
-
     const { mutate: deleteRecommendedAsset } = useDeleteRecommendedAsset()
 
     return(
         <Table>
             <TableCaption>Ativos incluídos no planejamento de sua carteira</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Código</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">% atual</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor atual</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">% planejado</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor planejado</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor a ajustar</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Recomendação</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ações</TableHead>
+                <TableRow>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Código</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">% atual</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor atual</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">% planejado</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor planejado</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor a ajustar</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Recomendação</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ações</TableHead>
+                </TableRow>
             </TableHeader>
             <TableBody>
                 {
@@ -117,7 +114,7 @@ export function TableRecommendedAsset({
                                             }
                                             action={()=> {
                                                 const id = ativo.id
-                                                deleteRecommendedAsset({id, token}, {
+                                                deleteRecommendedAsset(id, {
                                                     onError: (errorDeleteRecommendedAsset) => {
                                                         showErrorToast(`${ativo.symbol} - ${errorDeleteRecommendedAsset.message}`)
                                                     },
@@ -127,7 +124,7 @@ export function TableRecommendedAsset({
                                                 })
                                             }}
                                         >
-                                            <AlertDialogTrigger>
+                                            <AlertDialogTrigger asChild>
                                                 <button 
                                                     className="material-symbols-outlined text-lime-secondary opacity-60 hover:bg-my-foreground/50 p-1 rounded-full cursor-pointer" style={{fontSize: 22}}
                                                 >

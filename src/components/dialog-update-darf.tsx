@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { Input } from "./ui/input"
@@ -11,7 +11,6 @@ import { useUpdateDarf } from "@/queries/darf"
 import { Link } from "react-router"
 import Calendar24 from "./calendar-24"
 import CalendarPagamento from "./calendar-pagamento"
-import { AuthContext } from "@/contexts/auth.context"
 
 interface DialogUpdateDarfProps {
     darf :DarfI
@@ -27,9 +26,6 @@ export function DialogUpdateDarf({
     }
     
     const [ isUpdateDialogOpen, setIsUpdateDialogOpen ] = useState(false)
-
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token
 
     const [ modality, setModality ] = useState<TradeModality>()
     const [ periodoApuracao, setPeriodoApuracao ] = useState<number>()
@@ -101,7 +97,7 @@ export function DialogUpdateDarf({
             paymentDate: paymentDateToUpdate ?? null
         }
 
-        updateDarf({darfToUpdate, token}, {
+        updateDarf(darfToUpdate, {
             onError: (errorUpdateOrder) => {
                 showErrorToast(errorUpdateOrder.message)
             },

@@ -12,9 +12,8 @@ export default function DarfsPage() {
     const { loginResponse } = useContext(AuthContext)
     const [ inputFilter, setInputFilter ] = useState<string>("")
     const userId = loginResponse?.objetoResposta.id || ""
-    const token = loginResponse?.objetoResposta.token
 
-    const { data: darfs, isError: isErrorDarfs, error: errorDarfs } = getDarfs(userId, token)
+    const { data: darfs, isError: isErrorDarfs, error: errorDarfs } = getDarfs(userId)
 
     const darfListFiltered = filtarListaDeDarfs(inputFilter.toUpperCase(), darfs ?? [])
 

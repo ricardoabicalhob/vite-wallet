@@ -40,6 +40,7 @@ export default function LayoutConnected({ children }: { children? :React.ReactNo
   const navigateToRebalanceamento = () => navigate('/carteira/rebalanceamento');
   const navigateToImpostos = () => navigate('/carteira/impostos');
   const navigateToDarfs = () => navigate('/carteira/darfs');
+  // const navigateToMyDividends = () => navigate('/carteira/dividendos');
 
   return (
     <div className='flex flex-col w-full h-full bg-my-background overflow-y-auto custom-scrollbar'>
@@ -139,6 +140,16 @@ export default function LayoutConnected({ children }: { children? :React.ReactNo
                     icon="home_storage" 
                     onClick={navigateToMyOrders}
                   />
+
+                  {/* <AppSidebarButton 
+                    className="text-my-foreground" 
+                    isExpanded={expandedSidebar}
+                    isSelected={location.pathname === '/carteira/dividendos'}
+                    colorIconWhenSelected={colorIconWhenSelected}
+                    text="Meus dividendos" 
+                    icon="paid" 
+                    onClick={navigateToMyDividends}
+                  /> */}
                   
                 </AppSidebarGroupButtons>
 

@@ -4,35 +4,19 @@ import { AxiosError } from "axios"
 import type { DarfI, DarfToUpdateI } from "@/interfaces/darf.interface"
 
 const darfService = { 
-    getDarfs: async (userId :string, token :string | undefined) => {
+    getDarfs: async (userId :string) => {
         try {
-            const response = await api.get(`/darf?userId=${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.get(`/darf?userId=${userId}`)
 
             return response.data
         } catch (error :unknown) {
-            if (error instanceof AxiosError) {
-                const data = error.response?.data
-
-                if (typeof data === 'string') {
-                    throw new Error(data)
-                }
-
-                throw new Error(
-                    data?.message ||
-                    data?.error ||
-                    'Erro ao consultar as DARFs'
-                )
+            if(error instanceof AxiosError) {
+                throw new Error(error.response?.data.error)
             }
-
-            throw new Error('Erro inesperado')
         }
     },
 
-    createDarf: async (userId :string, year :number, month :number, modality :TradeModality, token :string) => {
+    createDarf: async (userId :string, year :number, month :number, modality :TradeModality) => {
         if(!userId || !year || !month || !modality) { throw new Error("Esperado um userId (string), month (number), year (number) e modality(day_trade | swing_trade)") }
         try {
             const response = await api.post(`/darf`, {
@@ -40,99 +24,58 @@ const darfService = {
                 year,
                 month,
                 modality
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            }
-        )
+            })
             return response.data
         } catch (error :unknown) {
-            if (error instanceof AxiosError) {
-                const data = error.response?.data
-
-                if (typeof data === 'string') {
-                    throw new Error(data)
-                }
-
-                throw new Error(
-                    data?.message ||
-                    data?.error ||
-                    'Erro ao criar DARF'
-                )
+            if(error instanceof AxiosError) {
+                throw new Error(error.response?.data.error)
             }
-
-            throw new Error('Erro inesperado')
         }
     },
 
-    deleteDarf: async (id :string, token :string) => {
+    deleteDarf: async (id :string) => {
         if(!id) { throw new Error("Erro ao deletar a DARF") }
         try {
-            const response = await api.delete(`/darf?id=${id}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.delete(`/darf?id=${id}`)
 
             return response.data
         } catch (error :unknown) {
-            if (error instanceof AxiosError) {
-                const data = error.response?.data
-
-                if (typeof data === 'string') {
-                    throw new Error(data)
-                }
-
-                throw new Error(
-                    data?.message ||
-                    data?.error ||
-                    'Erro ao deletar DARF'
-                )
+            if(error instanceof AxiosError) {
+                throw new Error(error.response?.data.error)
             }
-
-            throw new Error('Erro inesperado')
         }
     },
 
-    updateDarf: async (darfToUpdate :DarfToUpdateI, token :string | undefined) => {
+    updateDarf: async (darfToUpdate :DarfToUpdateI) => {
         if(!darfToUpdate) { throw new Error("Erro ao atualizar a DARF") }
         try {
-            const response = await api.patch('/darf', darfToUpdate, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.patch('/darf', darfToUpdate)
             
             return response.data as DarfI
         } catch (error :unknown) {
-            if (error instanceof AxiosError) {
-                const data = error.response?.data
-
-                if (typeof data === 'string') {
-                    throw new Error(data)
-                }
-
-                throw new Error(
-                    data?.message ||
-                    data?.error ||
-                    'Erro ao atualizar DARF'
-                )
+            if(error instanceof AxiosError) {
+                throw new Error(error.response?.data.error)
             }
-
-            throw new Error('Erro inesperado')
         }
     },
 
-    cancelPagamento: async (id :string, token :string | undefined) => {
+    updatePagamento: async (id :string) => {
+        if(!id) { throw new Error("Erro ao atualizar o pagamento da DARF") }
+        try {
+            const response = await api.patch('/darf/paga', id)
+            
+            return response.data as DarfI
+        } catch (error :unknown) {
+            if(error instanceof AxiosError) {
+                throw new Error(error.response?.data.error)
+            }
+        }
+    },
+
+    cancelPagamento: async (id :string) => {
         if(!id) { throw new Error("Erro ao cancelar o pagamento da DARF") }
         try {
-            const response = await api.patch('/darf/desfazerpagamento', { id }, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.patch('/darf/desfazerpagamento', { id })
             
             return response.data as DarfI
         } catch (error :unknown) {
@@ -146,7 +89,7 @@ const darfService = {
                 throw new Error(
                     data?.message ||
                     data?.error ||
-                    'Erro ao desfazer o registro de pagamento.'
+                    'Erro ao desfazer o registro de pagamento'
                 )
             }
 

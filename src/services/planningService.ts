@@ -2,14 +2,10 @@ import api from "./api"
 import { AxiosError } from "axios"
 
 const planningService = { 
-    getInfo: async (userId :string, investment :number, token :string | undefined) => {
+    getInfo: async (userId :string, investment :number) => {
         if(!userId) { throw new Error("Esperado um userId (string)") }
         try {
-            const response = await api.get(`/planejamento?userId=${userId}&investment=${investment}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.get(`/planejamento?userId=${userId}&investment=${investment}`)
             return response.data
         } catch (error :unknown) {
             if (error instanceof AxiosError) {

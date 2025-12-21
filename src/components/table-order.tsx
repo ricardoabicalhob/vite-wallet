@@ -9,8 +9,6 @@ import { TypeOperationIndicator } from "./type-operation_indicator"
 import { AlertDialogMessage } from "./alert-dialog"
 import { AlertDialogTrigger } from "./ui/alert-dialog"
 import { AssetLogo } from "./asset-logo"
-import { useContext } from "react"
-import { AuthContext } from "@/contexts/auth.context"
 
 interface TableOrdersProps {
     orderListFiltered :OrderPresenter[]
@@ -23,13 +21,11 @@ export function TableOrders({
 } :TableOrdersProps) {
 
     const { mutate: deleteOrder } = useDeleteOrder()
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token
 
     function handelDeleteOrder(ordem :OrderPresenter) {
         const id = ordem.id
         
-        deleteOrder({id, token}, {
+        deleteOrder(id, {
             onError: (errorDeleteOrder) => {
                 showErrorToast(errorDeleteOrder.message)
             },
@@ -43,19 +39,21 @@ export function TableOrders({
         <Table>
             <TableCaption>Lista de ordens</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Data</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Tipo</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Código</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Quantidade</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Preço unit.</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Taxas</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">IRRF</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Total sem taxas</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Total com taxas</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Preço com taxas</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Operação</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ações</TableHead>
+                <TableRow>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Data</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Tipo</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Código</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Quantidade</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Preço unit.</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Taxas</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">IRRF</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Total sem taxas</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Total com taxas</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Preço com taxas</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Operação</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ações</TableHead>
+                </TableRow>
             </TableHeader>
             <TableBody>
                 {orderListFiltered && orderListFiltered.map(ordem => (
@@ -126,7 +124,7 @@ export function TableOrders({
                                         handelDeleteOrder(ordem)
                                     }}
                                 >
-                                    <AlertDialogTrigger>
+                                    <AlertDialogTrigger asChild>
                                         <button 
                                             className="material-symbols-outlined text-lime-secondary opacity-60 hover:bg-my-foreground/50 p-1 rounded-full cursor-pointer" 
                                             style={{fontSize: 22}}

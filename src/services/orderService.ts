@@ -3,14 +3,10 @@ import api from "./api"
 import { AxiosError } from "axios"
 
 const orderService = { 
-    createOrder: async (orderToCreate :OrderCreate, token :string | undefined) => {
+    createOrder: async (orderToCreate :OrderCreate) => {
         if(!orderToCreate) { throw new Error("Erro durante a criação da ordem") }
         try {
-            const response = await api.post('/ordem', orderToCreate, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.post('/ordem', orderToCreate)
             
             return response.data as OrderPresenter
         } catch (error :unknown) {
@@ -31,15 +27,11 @@ const orderService = {
             throw new Error('Erro inesperado')
         }
     },
-    deleteOrder: async (id :string | undefined, token :string | undefined) => {
+    deleteOrder: async (id :string | undefined) => {
         if(!id) { throw new Error("Erro ao deletar a ordem") }
         
         try {
-            const response = await api.delete(`/ordem?id=${id}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.delete(`/ordem?id=${id}`)
 
             return response.data
         } catch (error :unknown) {
@@ -60,14 +52,10 @@ const orderService = {
             throw new Error('Erro inesperado')
         }
     },
-    updateOrder: async (orderToUpdate :OrderToUpdate, token :string | undefined) => {
+    updateOrder: async (orderToUpdate :OrderToUpdate) => {
         if(!orderToUpdate) { throw new Error("Erro ao atualizar a ordem") }
         try {
-            const response = await api.patch('/ordem', orderToUpdate, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.patch('/ordem', orderToUpdate)
             
             return response.data as OrderPresenter
         } catch (error :unknown) {
@@ -88,14 +76,10 @@ const orderService = {
             throw new Error('Erro inesperado')
         }
     },
-    listByMonth: async (userId :string, year :number, month :number, token :string | undefined) => {
+    listByMonth: async (userId :string, year :number, month :number) => {
         if(!userId || year === undefined || month === undefined) { throw new Error("ID do usuário, mês ou ano inválidos.") }
         try {
-            const response = await api.get(`/ordem/mes?userId=${userId}&year=${year}&month=${month}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.get(`/ordem/mes?userId=${userId}&year=${year}&month=${month}`)
 
             return response.data
         } catch (error :unknown) {
@@ -116,14 +100,10 @@ const orderService = {
             throw new Error('Erro inesperado')
         }
     },
-    getOrders: async (userId :string, token :string | undefined) => {
+    getOrders: async (userId :string) => {
         if(!userId) { throw new Error("Informe o ID do usuário") }
         try {
-            const response = await api.get(`/ordem?userId=${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
+            const response = await api.get(`/ordem?userId=${userId}`)
             return response.data || null
         } catch (error :unknown) {
             if (error instanceof AxiosError) {

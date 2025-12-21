@@ -8,8 +8,6 @@ import { showErrorToast, showSuccesToast } from "@/utils/toasts";
 import { AlertDialogTrigger } from "./ui/alert-dialog";
 import { DialogDarf } from "./dialog-darf";
 import { formatPeriodoApuracaoToString } from "@/utils/formatters";
-import { useContext } from "react";
-import { AuthContext } from "@/contexts/auth.context";
 
 interface TableDarfsProps {
     darfs :DarfI[]
@@ -18,14 +16,6 @@ interface TableDarfsProps {
 export function TableDarfs({
     darfs
 } :TableDarfsProps) {
-
-    // const icons = {
-    //     "swing_trade": "monitoring",
-    //     "day_trade": "acute"
-    // }
-
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token ?? ""
 
     const modalities = {
         "swing_trade": "Swing Trade",
@@ -36,7 +26,7 @@ export function TableDarfs({
     const { mutate: cancelarPagamentoDarf } = useCancelPagamentoDarf()
 
     function handelDeleteDarf(id :string) {
-        deleteDarf({id, token}, {
+        deleteDarf(id, {
             onError: (errorDeleteDarf) => {
                 showErrorToast(errorDeleteDarf.message)
             },
@@ -47,12 +37,12 @@ export function TableDarfs({
     }
 
     function handlePagamentoDarf(id :string) {
-        cancelarPagamentoDarf({id, token}, {
+        cancelarPagamentoDarf(id, {
             onError: (errorUpdatedDarf) => {
                 showErrorToast(errorUpdatedDarf.message)
             },
             onSuccess: (darfUpdated)=> {
-                showSuccesToast(`${darfUpdated?.paga ? 'Pagamento realizado.' : 'Pagamento pendente.'}`)
+                showSuccesToast(`${darfUpdated?.paga ? 'Registro de pagamento feito.' : 'Registro de pagamento desfeito.'}`)
             }
         })
     }
@@ -61,17 +51,19 @@ export function TableDarfs({
         <Table>
             <TableCaption>Lista de DARFs</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Período de apuração</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Modalidade</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[5%]">Código da Receita</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Vencimento</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor do principal</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Multa</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Juros / Encargos</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor total</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[8%]">Situação</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%]">Pagamento</TableHead>
-                <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ações</TableHead>
+                <TableRow>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Período de apuração</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Modalidade</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[5%]">Código da Receita</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Vencimento</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor do principal</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Multa</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Juros / Encargos</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Valor total</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[8%]">Situação</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center w-[10%]">Pagamento</TableHead>
+                    <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ações</TableHead>
+                </TableRow>
             </TableHeader>
             <TableBody>
                 {darfs &&

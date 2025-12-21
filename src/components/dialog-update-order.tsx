@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { Input } from "./ui/input"
@@ -10,7 +10,6 @@ import { calcularIRRFsobreOrdemDeVendaEmCentavos } from "@/utils/taxes.utils"
 import { converterValorDeCentavosParaReais } from "@/utils/assets.utils"
 import { useUpdateOrder } from "@/queries/order"
 import { formatCentavosToReal, parseInputToCentavos } from "@/utils/formatters"
-import { AuthContext } from "@/contexts/auth.context"
 
 interface DialogUpdateOrderProps {
     ordem :OrderPresenter
@@ -21,9 +20,6 @@ export function DialogUpdateOrder({
     ordem,
     logoUrl
 } :DialogUpdateOrderProps) {
-
-    const { loginResponse } = useContext(AuthContext)
-    const token = loginResponse?.objetoResposta.token
 
     const [ isUpdateDialogOpen, setIsUpdateDialogOpen ] = useState(false)
 
@@ -77,7 +73,7 @@ export function DialogUpdateOrder({
             id: orderIdToUpdate
         }
 
-        updateOrder({orderToUpdate, token}, {
+        updateOrder(orderToUpdate, {
             onError: (errorUpdateOrder) => {
                 showErrorToast(errorUpdateOrder.message)
             },

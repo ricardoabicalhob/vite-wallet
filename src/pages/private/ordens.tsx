@@ -15,12 +15,11 @@ export default function MyOrders() {
 
     const { loginResponse } = useContext(AuthContext)
     const userId = loginResponse?.objetoResposta.id || ""
-    const token = loginResponse?.objetoResposta.token
 
     const [ inputFilter, setInputFilter ] = useState<string>("")
 
-    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrders(userId, token)
-    const { data: portifolioInfo, isLoading: isLoadingPortifolioInfo, isError: isErrorPortifolioInfo } = usePortifolio(userId, token)
+    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrders(userId)
+    const { data: portifolioInfo, isLoading: isLoadingPortifolioInfo, isError: isErrorPortifolioInfo } = usePortifolio(userId)
 
     const orderListFiltered = filtarListaDeOrdens(inputFilter.toUpperCase(), ordens ?? [])
     const totalInvestidoEmCentavos = portifolioInfo?.totalInvestidoNaCarteiraEmCentavos ?? 0

@@ -1,4 +1,3 @@
-import CardAsset from "@/components/card-asset"
 import { Display, DisplayBody, DisplayContent, DisplayHeader, DisplayItem, DisplayTitle } from "@/components/display"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { MoedaEmReal } from "@/components/moeda-percentual"
@@ -9,7 +8,7 @@ import { showErrorToast } from "@/utils/toasts"
 import { useContext } from "react"
 import emptyWallet from "../../assets/images/empty-wallet-removebg-preview.png"
 
-export default function MinhaCarteiraDeAtivos() {
+export default function MeusDividendos() {
 
     const { loginResponse } = useContext(AuthContext)
     const userId = loginResponse?.objetoResposta.id || ""
@@ -73,12 +72,7 @@ export default function MinhaCarteiraDeAtivos() {
             }
             
             <div className="flex gap-3 justify-start flex-wrap w-full overflow-y-auto custom-scrollbar-div">
-                {ativos?.map(ativo => (
-                    <CardAsset
-                        key={ativo.assetSymbol}
-                        ativo={ativo}
-                    />
-                ))}
+                {/* INSERIR CONTEUDO AQUI */}
             </div>
         </div>
     )

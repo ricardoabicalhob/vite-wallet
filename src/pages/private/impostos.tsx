@@ -25,13 +25,12 @@ export default function Impostos() {
     const { loginResponse } = useContext(AuthContext)
     const { tradeModality, setTradeModality } = useContext(SystemContext)
     const userId = loginResponse?.objetoResposta.id || ""
-    const token = loginResponse?.objetoResposta.token
 
     const [ selectedDate, setSelectedDate ] = useState<Date | undefined>(new Date())
     const selectedMonth = selectedDate ? selectedDate.getMonth() : undefined
     const selectedYear = selectedDate ? selectedDate.getFullYear() : undefined
     
-    const { data: taxesInfo, isLoading: isLoadingTaxesInfo, isError: isErrorTaxesInfo } = useTaxes(userId, selectedYear, selectedMonth, tradeModality, token)
+    const { data: taxesInfo, isLoading: isLoadingTaxesInfo, isError: isErrorTaxesInfo } = useTaxes(userId, selectedYear, selectedMonth, tradeModality)
     const { mutate: createDarf } = useCreateDarf()
 
     const receitaBrutaTotalEmCentavos = taxesInfo?.receitaBrutaTotalComVendaEmCentavos ?? 0
@@ -85,11 +84,11 @@ export default function Impostos() {
     ]
 
     const handleCreateDarf = () => {
-        if(!userId || !selectedYear || !selectedMonth || !tradeModality || !token) {
+        if(!userId || !selectedYear || !selectedMonth || !tradeModality) {
             throw new Error("Preencha todos os campos!")
         }
         
-        createDarf({userId, selectedYear, selectedMonth, tradeModality, token}, {
+        createDarf({userId, selectedYear, selectedMonth, tradeModality}, {
             onSuccess: (darfCreated) => {
                 showSuccesToast(`DARF de ${modalities[darfCreated.modality]} para o período de apuração ${formatPeriodoApuracaoToString(darfCreated.periodoApuracao)} criada!`)
             },
@@ -103,9 +102,7 @@ export default function Impostos() {
     const isError = isErrorTaxesInfo
 
     if(isError) {
-        return(
-            showErrorToast("Falha no carregamento das informações da BRAPI")
-        )
+        showErrorToast("Falha no carregamento das informações da BRAPI")
     }
 
     return(

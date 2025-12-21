@@ -25,6 +25,7 @@ import Rebalanceamento from './pages/private/rebalanceamento'
 import DarfsPage from './pages/private/darfs'
 import MinhaCarteiraDeAtivos from './pages/private/carteira'
 import Impostos from './pages/private/impostos'
+import MeusDividendos from './pages/private/dividendos'
 
 const basename = import.meta.env.BASE_URL
 
@@ -92,7 +93,8 @@ function App() {
             { path: '/carteira/ordens', element: <MyOrders /> },
             { path: '/carteira/rebalanceamento', element: <Rebalanceamento /> },
             { path: '/carteira/impostos', element: <Impostos /> },
-            { path: '/carteira/darfs', element: <DarfsPage /> }
+            { path: '/carteira/darfs', element: <DarfsPage /> },
+            { path: '/carteira/dividendos', element: <MeusDividendos /> }
           ],
         },
       ],

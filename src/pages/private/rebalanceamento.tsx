@@ -15,16 +15,15 @@ import { useContext, useEffect, useState } from "react"
 export default function Rebalanceamento() {
     const { loginResponse } = useContext(AuthContext)
     const userId = loginResponse?.objetoResposta.id || ""
-    const token = loginResponse?.objetoResposta.token
 
     
     const [ centavosInvestment, setCentavosInvestment ] = useState<number>(0)
     const [ displayValue, setDisplayValue ] = useState("")
     const [ queryInvestment, setQueryInvestment ] = useState(0)
     
-    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrders(userId, token)
+    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrders(userId)
 
-    const { data: planningSumary, isLoading: isLoadingPlanning } = usePlanning(userId, queryInvestment, token)
+    const { data: planningSumary, isLoading: isLoadingPlanning } = usePlanning(userId, queryInvestment)
 
     const patrimonio = planningSumary?.posicaoAtualDaCarteiraEmCentavos ?? 0
     const ativosPlanejadosConsolidados = planningSumary?.ativosPlanejadosConsolidados ?? []
