@@ -12,6 +12,14 @@ export const useOrders = (userId :string) => {
     })
 }
 
+export const useOrdersByYear= (userId :string, year :number) => {
+    return useQuery<OrderPresenter[]>({
+        queryKey: orderKeys.getByUserIdAndYear(userId, year),
+        queryFn: ()=> orderService.getOrdersByYear(userId, year),
+        staleTime: 1000 * 60 * 5
+    })
+}
+
 export const useOrdersListByMonth = (userId :string, year :number, month :number) => {
     return useQuery<OrderPresenter[]>({
         queryKey: orderKeys.listByMonth(userId, year, month),

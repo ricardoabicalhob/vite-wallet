@@ -122,6 +122,30 @@ const orderService = {
 
             throw new Error('Erro inesperado')
         }
+    },
+
+    getOrdersByYear: async (userId :string, year :number) => {
+        if(!userId) { throw new Error("Informe o ID do usuário") }
+        try {
+            const response = await api.get(`/ordem/ano?userId=${userId}&year=${year}`)
+            return response.data || null
+        } catch (error :unknown) {
+            if (error instanceof AxiosError) {
+                const data = error.response?.data
+
+                if (typeof data === 'string') {
+                    throw new Error(data)
+                }
+
+                throw new Error(
+                    data?.message ||
+                    data?.error ||
+                    'Erro ao listar as ordens'
+                )
+            }
+
+            throw new Error('Erro inesperado')
+        }
     }
 }
 

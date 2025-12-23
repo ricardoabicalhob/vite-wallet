@@ -6,6 +6,7 @@ import logoDarf from '../../src/assets/images/logo-darf.png'
 import { MoedaEmReal } from "./moeda-percentual"
 import { AuthContext } from "@/contexts/auth.context"
 import { formatPeriodoApuracaoToString } from "@/utils/formatters"
+import imgPaga from "../assets/images/pago-fundo-transparente.png"
 
 interface DialogDarfProps {
     darf :DarfI
@@ -53,7 +54,13 @@ export function DialogDarf({
                     <DialogTitle className="text-my-background-secondary">Documento de Arrecadação de Receitas Federais</DialogTitle>
                     <DialogDescription className="text-my-background-secondary">Incidência de imposto sobre as suas operações <span className="font-bold italic">{ modalities[darf.modality] }</span></DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4">
+                <div className="relative grid gap-4">
+                    {
+                        darf.paga &&
+                        <div className="absolute bottom-6 right-6">
+                            <img src={imgPaga} className="w-[240px]"/>
+                        </div>
+                    }
                     
                     <div className="w-full max-w-4xl mx-auto font-sans text-[11px]">
                         

@@ -6,6 +6,7 @@ import type { RecommendedAssetCreate, RecommendedAssetUpdatePlannedPercentage } 
 export const orderKeys = {
     all: ['orders'],
     list: () => [...orderKeys.all],
+    getByUserIdAndYear: (userId :string, year :number) => [...orderKeys.all, "listOrdersByYear", userId, year],
     listByMonth: (userId :string, year :number, month :number) => [...orderKeys.all, 'listByMonth', userId, year, month] as const,
     create: (order :OrderCreate)=> [...orderKeys.all, "create", order.userId] as const,
     delete: (id :string | undefined) => [...orderKeys.all, "delete", id] as const,
