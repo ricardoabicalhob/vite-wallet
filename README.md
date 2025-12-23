@@ -69,7 +69,7 @@ Cada modalidade possui regras próprias de tributação, alíquotas e compensaç
 ![Minha carteira](<./src/docs/images/Captura de tela 2025-11-30 015710.png>)
 ![Minhas ordens](<./src/docs/images/Captura de tela 2025-11-30 015743.png>)
 ![Rebalanceamento da carteira](<./src/docs/images/Captura de tela 2025-11-30 015800.png>)
-![Imposto de renda](./src/docs/images/image.png)
+![Imposto de renda](./src/docs/images/Captura%20de%20tela%202025-12-23%20103842.png)
 
 ---
 
