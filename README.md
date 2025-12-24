@@ -65,11 +65,12 @@ Cada modalidade possui regras próprias de tributação, alíquotas e compensaç
 
 ## 📷 Capturas de Tela
 
-![Tela inicial](<./src/docs//images/Captura de tela 2025-11-30 015730.png>)
+![Tela de login](<./src/docs/images/Captura de tela 2025-12-23 234634.png>)
+![Tela inicial](<./src/docs/images/Captura de tela 2025-11-30 015730.png>)
 ![Minha carteira](<./src/docs/images/Captura de tela 2025-11-30 015710.png>)
 ![Minhas ordens](<./src/docs/images/Captura de tela 2025-11-30 015743.png>)
 ![Rebalanceamento da carteira](<./src/docs/images/Captura de tela 2025-11-30 015800.png>)
-![Imposto de renda](./src/docs/images/Captura%20de%20tela%202025-12-23%20103842.png)
+![Imposto de renda](<./src/docs/images/Captura de tela 2025-12-23 103842.png>)
 
 ---
 
