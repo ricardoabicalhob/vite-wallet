@@ -69,7 +69,7 @@ export default function SignInPage() {
     }
 
     async function handleLogin(email :string, password :string) {
-        const response = await fetch("http://localhost:3100/login", {
+        const response = await fetch("http://localhost:3100/auth", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -140,7 +140,7 @@ export default function SignInPage() {
                     <div className="flex flex-col">
                         <div className="flex gap-2 items-center">
                             <div 
-                                className="flex items-center z-50 text-my-foreground-secondary select-none max-[1100px]:hidden font-semibold" 
+                                className="flex items-center z-50 text-my-foreground-secondary select-none font-semibold" 
                                 style={{fontFamily: 'Montserrat, sans-serif', letterSpacing: '4px', fontSize: 24}}
                             >
                                 Invest

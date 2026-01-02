@@ -1,6 +1,6 @@
 import { AssetLogo } from "./asset-logo";
 import { MoedaEmReal } from "./moeda-percentual";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import type { TaxesI } from "@/interfaces/taxes.interface";
 
 interface TableTaxesProps {
@@ -13,6 +13,7 @@ export function TableTaxes({
 
     return(
         <Table>
+            <TableCaption>{`${taxesInfo.ativosConsolidados.length === 0 ? 'Nenhuma venda realizada no período' : 'Vendas realizadas no período'}`}</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
                 <TableRow>
                     <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Ativo</TableHead>

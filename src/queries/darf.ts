@@ -5,30 +5,30 @@ import darfService from "@/services/darfService"
 import { queryClient } from "@/services/queryClient"
 import type { DarfI, DarfToUpdateI } from "@/interfaces/darf.interface"
 
-type InputInfo = { userId :string, selectedYear :number, selectedMonth :number, tradeModality :TradeModality }
+type InputInfo = { selectedYear :number, selectedMonth :number, tradeModality :TradeModality }
 
-export const getDarfs = (userId :string) => {
+export const getDarfs = () => {
     return useQuery<DarfI[]>({
-        queryKey: darfKeys.list(userId),
-        queryFn: () => darfService.getDarfs(userId),
+        queryKey: darfKeys.list(),
+        queryFn: () => darfService.getDarfs(),
         staleTime: 1000 * 60 * 5
     })
 }
 
-export const getDarfsByYear = (userId :string, year :number) => {
+export const getDarfsByYear = (year :number) => {
     return useQuery<DarfI[]>({
-        queryKey: darfKeys.getByUserIdAndYear(userId, year),
-        queryFn: () => darfService.getDarfsByYear(userId, year),
+        queryKey: darfKeys.getByUserIdAndYear(year),
+        queryFn: () => darfService.getDarfsByYear(year),
         staleTime: 1000 * 60 * 5
     })
 }
 
 export const useCreateDarf = () => {
     return useMutation<DarfI , Error, InputInfo>({
-        mutationFn: ({ userId, selectedYear, selectedMonth: month, tradeModality: modality } :InputInfo) => darfService.createDarf(userId, selectedYear, month, modality),
-        onSuccess: (createdDarf, {userId, selectedYear, selectedMonth, tradeModality}) => {
+        mutationFn: ({ selectedYear, selectedMonth: month, tradeModality: modality } :InputInfo) => darfService.createDarf(selectedYear, month, modality),
+        onSuccess: (createdDarf, {selectedYear, selectedMonth, tradeModality}) => {
             queryClient.invalidateQueries({ queryKey: darfKeys.all })
-            createdDarf && queryClient.setQueryData(darfKeys.create(userId, selectedYear, selectedMonth, tradeModality), createdDarf)
+            createdDarf && queryClient.setQueryData(darfKeys.create(selectedYear, selectedMonth, tradeModality), createdDarf)
         },
         onError: (error) => {
             console.error('Falha ao criar a Darf!', error)

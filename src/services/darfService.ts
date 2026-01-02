@@ -4,9 +4,9 @@ import { AxiosError } from "axios"
 import type { DarfI, DarfToUpdateI } from "@/interfaces/darf.interface"
 
 const darfService = { 
-    getDarfs: async (userId :string) => {
+    getDarfs: async () => {
         try {
-            const response = await api.get(`/darf?userId=${userId}`)
+            const response = await api.get(`/darfs`)
 
             return response.data
         } catch (error :unknown) {
@@ -28,9 +28,9 @@ const darfService = {
         }
     },
 
-    getDarfsByYear: async (userId :string, year :number) => {
+    getDarfsByYear: async (year :number) => {
         try {
-            const response = await api.get(`/darf/ano?userId=${userId}&year=${year}`)
+            const response = await api.get(`/darfs/ano?year=${year}`)
 
             return response.data
         } catch (error :unknown) {
@@ -52,11 +52,10 @@ const darfService = {
         }
     },
 
-    createDarf: async (userId :string, year :number, month :number, modality :TradeModality) => {
-        if(!userId || !year || !month || !modality) { throw new Error("Esperado um userId (string), month (number), year (number) e modality(day_trade | swing_trade)") }
+    createDarf: async (year :number, month :number, modality :TradeModality) => {
+        if(!year || !month || !modality) { throw new Error("Esperado um userId (string), month (number), year (number) e modality(day_trade | swing_trade)") }
         try {
-            const response = await api.post(`/darf`, {
-                userId,
+            const response = await api.post(`/darfs`, {
                 year,
                 month,
                 modality
@@ -84,7 +83,7 @@ const darfService = {
     deleteDarf: async (id :string) => {
         if(!id) { throw new Error("Erro ao deletar a DARF") }
         try {
-            const response = await api.delete(`/darf?id=${id}`)
+            const response = await api.delete(`/darfs?id=${id}`)
 
             return response.data
         } catch (error :unknown) {
@@ -109,7 +108,7 @@ const darfService = {
     updateDarf: async (darfToUpdate :DarfToUpdateI) => {
         if(!darfToUpdate) { throw new Error("Erro ao atualizar a DARF") }
         try {
-            const response = await api.patch('/darf', darfToUpdate)
+            const response = await api.patch('/darfs', darfToUpdate)
             
             return response.data as DarfI
         } catch (error :unknown) {
@@ -134,7 +133,7 @@ const darfService = {
     updatePagamento: async (id :string) => {
         if(!id) { throw new Error("Erro ao atualizar o pagamento da DARF") }
         try {
-            const response = await api.patch('/darf/paga', id)
+            const response = await api.patch('/darfs/paga', id)
             
             return response.data as DarfI
         } catch (error :unknown) {
@@ -159,7 +158,7 @@ const darfService = {
     cancelPagamento: async (id :string) => {
         if(!id) { throw new Error("Erro ao cancelar o pagamento da DARF") }
         try {
-            const response = await api.patch('/darf/desfazerpagamento', { id })
+            const response = await api.patch('/darfs/desfazerpagamento', { id })
             
             return response.data as DarfI
         } catch (error :unknown) {

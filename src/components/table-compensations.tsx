@@ -35,7 +35,7 @@ export function TableCompensations({
 
     return(
         <Table>
-            <TableCaption>Lista de compensações</TableCaption>
+            <TableCaption>{`${compensations.length === 0 ? 'Lista de compensações vazia' : 'Lista de compensações'}`}</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
                 <TableRow>
                     <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Período de apuração</TableHead>

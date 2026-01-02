@@ -37,7 +37,7 @@ export function TableOrders({
 
     return(
         <Table>
-            <TableCaption>Lista de ordens</TableCaption>
+            <TableCaption>{`${orderListFiltered.length === 0 ? 'Lista de ordens vazia' : 'Lista de ordens'}`}</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
                 <TableRow>
                     <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Data</TableHead>

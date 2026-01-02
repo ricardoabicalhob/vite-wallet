@@ -6,16 +6,15 @@ import { Label } from "./ui/label"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import type { OrderPresenter } from "@/interfaces/order.interface"
-import type { ApiResponse } from "@/interfaces/quote.interface"
 import { dataChartMinhaCarteiraDeAtivosPlanejada, obterQuantidadeAtualDeAcoesDeUmAtivo, removeTrailingF } from "@/utils/assets.utils"
 import { showErrorToast, showSuccesToast } from "@/utils/toasts"
 import type { RecommendedAssetCreate } from "@/interfaces/recommendedAsset.interface"
 import { AxiosError } from "axios"
-import { publicApi } from "@/services/api"
 import { useCreateRecommendedAsset } from "@/queries/recommendedAsset"
 import { Porcento } from "./moeda-percentual"
 import type { AtivoPlanejadoConsolidado } from "@/interfaces/ativoPlanejadoConsolidado.interface"
 import { MiniLoadingSpinner } from "./mini-loading-spinner"
+import { useValidateAssetSymbol } from "@/queries/asset"
 
 interface DialogRecommendedAssetProps {
     userId :string
@@ -51,6 +50,7 @@ export function DialogCreateRecommendedAsset({
         }, [recommendedValue, amount, unitPrice])
 
     const { mutate: createRecommendedAsset } = useCreateRecommendedAsset()
+    const { mutate: validateAssetSymbol } = useValidateAssetSymbol()
 
     function resetForm() {
         setAssetSymbol("")
@@ -61,31 +61,35 @@ export function DialogCreateRecommendedAsset({
     }
 
     async function validateSymbol(symbol :string) {
-        const token = import.meta.env.VITE_BRAPI_API_KEY
 
-        const assetSymbolRemovedTrailingF = removeTrailingF(symbol)
-
-        try {
-            setIsValidatingAsset(true)
-            const response = await publicApi.get(`https://brapi.dev/api/quote/${assetSymbolRemovedTrailingF}?token=${token}`)
-            const data :ApiResponse = response.data
-
-            if(ativosPlanejadosConsolidados.find(ativo => ativo.symbol === data.results[0].symbol)) {
+        setIsValidatingAsset(true)
+        
+        validateAssetSymbol(symbol, {
+            onSuccess: (validatedAsset) => {
+                if(ativosPlanejadosConsolidados.find(ativo => ativo.symbol === validatedAsset.symbol)) {
+                    setIsValidatingAsset(false)
+                    setAssetSymbol("")
+                    showErrorToast(`Você já possui ${validatedAsset.symbol} em seu planejamento!`)
+                    return
+                }
+ 
+                setAssetSymbol(validatedAsset.symbol)
+                setAssetLogourl(validatedAsset.logoUrl)
+                setUnitPrice(validatedAsset.regularMarketPrice)
+                setIsValidatingAsset(false)        
+            },
+            onError: (error) => {
+                if(error instanceof AxiosError) {
+                    setAssetSymbol("")
+                    showErrorToast(error.response?.data.message)
+                    setIsValidatingAsset(false)
+                }
+                
+                setAssetSymbol("")
+                showErrorToast(error.message)
                 setIsValidatingAsset(false)
-                showErrorToast(`Você já possui ${data.results[0].symbol} em seu planejamento!`)
-                return
             }
-
-            setAssetSymbol(data.results[0].symbol)
-            setAssetLogourl(data.results[0].logourl)
-            setUnitPrice(data.results[0].regularMarketPrice)
-            setIsValidatingAsset(false)
-        } catch (error :unknown) {
-            if(error instanceof AxiosError) {
-                showErrorToast(error.response?.data.message)
-            }
-            setIsValidatingAsset(false)
-        }
+        })
     }
 
     function handleSubmit(e :React.FormEvent) {

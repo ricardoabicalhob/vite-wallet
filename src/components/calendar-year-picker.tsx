@@ -6,13 +6,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 import { useEffect, useMemo } from "react"
 
 interface YearPickerProps {
   value?: number
   onChange: (year: number) => void
   totalYears?: number // default: 10
-  label?: string
+  label?: string,
+  className? :string
 }
 
 export function YearPicker({
@@ -20,6 +22,7 @@ export function YearPicker({
   onChange,
   totalYears = 10,
   label = "Ano",
+  className
 }: YearPickerProps) {
   const currentYear = new Date().getFullYear()
 
@@ -37,13 +40,16 @@ export function YearPicker({
 
   return (
     <div className="flex gap-2 items-center">
-      <Label className="text-sm pl-2">{label}</Label>
+      {label &&<Label className="text-sm text-my-foreground-secondary">{label}</Label>}
 
       <Select
         value={String(value ?? currentYear)}
         onValueChange={(year) => onChange(Number(year))}
       >
-        <SelectTrigger className="w-full justify-between focus:!ring-[1px] ml-0.5 font-normal text-my-foreground-secondary bg-my-background-secondary border-0 hover:bg-my-background-secondary hover:text-my-foreground-secondary cursor-pointer">
+        <SelectTrigger className={cn(
+          className,
+          "w-full justify-between focus:!ring-[1px] ml-0.5 font-normal text-my-foreground-secondary bg-my-background-secondary border-0 hover:bg-my-background-secondary hover:text-my-foreground-secondary cursor-pointer"
+          )}>
           <SelectValue placeholder="Selecione o ano" />
         </SelectTrigger>
 

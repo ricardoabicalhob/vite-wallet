@@ -20,3 +20,10 @@ export interface AssetPresenter {
     shortName :string
     regularMarketTime :string
 }
+
+export interface ValidatedAssetSymbolPayload {
+    symbol: string,
+    shortName: string,
+    logoUrl: string,
+    regularMarketPrice: number
+}

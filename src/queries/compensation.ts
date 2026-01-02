@@ -4,18 +4,18 @@ import { queryClient } from "@/services/queryClient"
 import type { CompensationResponse } from "@/interfaces/compensation.interface"
 import compensationService from "@/services/compensationService"
 
-export const useCompensation = (userId :string) => {
+export const useCompensation = () => {
     return useQuery<CompensationResponse[]>({
-        queryKey: compensationKeys.list(userId),
-        queryFn: () => compensationService.getCompensations(userId),
+        queryKey: compensationKeys.list(),
+        queryFn: () => compensationService.getCompensations(),
         staleTime: 1000 * 60 * 5
     })
 }
 
-export const UseCompensationByYear = (userId :string, year :number) => {
+export const UseCompensationByYear = (year :number) => {
     return useQuery<CompensationResponse[]>({
-        queryKey: compensationKeys.getByUserIdAndYear(userId, year),
-        queryFn: () => compensationService.getCompensationsByYear(userId, year),
+        queryKey: compensationKeys.getByUserIdAndYear(year),
+        queryFn: () => compensationService.getCompensationsByYear(year),
         staleTime: 1000 * 60 * 5
     })
 }

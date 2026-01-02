@@ -4,11 +4,10 @@ import { AxiosError } from "axios"
 
 const processFiscalResultService = { 
 
-    execute: async (userId :string, year :number, month :number, modality :TradeModality) => {
-        if(!userId || !year || !month || !modality) { throw new Error("Esperado um userId (string), month (number), year (number) e modality(day_trade | swing_trade)") }
+    execute: async (year :number, month :number, modality :TradeModality) => {
+        if(!year || !month || !modality) { throw new Error("Esperado um userId (string), month (number), year (number) e modality(day_trade | swing_trade)") }
         try {
-            const response = await api.post(`/calculo-fiscal`, {
-                userId,
+            const response = await api.post(`/resultados-fiscais`, {
                 year,
                 month,
                 modality

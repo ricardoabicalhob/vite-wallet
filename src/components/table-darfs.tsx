@@ -49,7 +49,7 @@ export function TableDarfs({
 
     return(
         <Table>
-            <TableCaption>Lista de DARFs</TableCaption>
+            <TableCaption>{`${darfs.length === 0 ? 'Lista de DARFs vazia' : 'Lista de DARFs'}`}</TableCaption>
             <TableHeader className="sticky top-0 bg-my-background z-10">
                 <TableRow>
                     <TableHead className="text-my-foreground-secondary text-xs font-normal opacity-60 text-center">Período de apuração</TableHead>

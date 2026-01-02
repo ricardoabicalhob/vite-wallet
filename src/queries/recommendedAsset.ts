@@ -4,13 +4,13 @@ import type { RecommendedAssetCreate, RecommendedAssetPresenter, RecommendedAsse
 import recommendedAssetService from "@/services/recommendedAssetService"
 import { queryClient } from "@/services/queryClient"
 
-export const useRecommendedAssets = (userId :string) => {
-    return useQuery<RecommendedAssetPresenter[]>({
-        queryKey: recommendedAssetKeys.list(),
-        queryFn: ()=> recommendedAssetService.getRecommendedAssets(userId),
-        staleTime: 1000 * 60 * 5
-    })
-}
+// export const useRecommendedAssets = (userId :string) => {
+//     return useQuery<RecommendedAssetPresenter[]>({
+//         queryKey: recommendedAssetKeys.list(),
+//         queryFn: ()=> recommendedAssetService.getRecommendedAssets(userId),
+//         staleTime: 1000 * 60 * 5
+//     })
+// }
 
 export const useCreateRecommendedAsset = () => {
     return useMutation<RecommendedAssetCreate | undefined , Error, RecommendedAssetCreate>({

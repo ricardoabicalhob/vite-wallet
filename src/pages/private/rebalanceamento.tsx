@@ -21,9 +21,9 @@ export default function Rebalanceamento() {
     const [ displayValue, setDisplayValue ] = useState("")
     const [ queryInvestment, setQueryInvestment ] = useState(0)
     
-    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrders(userId)
+    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrders()
 
-    const { data: planningSumary, isLoading: isLoadingPlanning } = usePlanning(userId, queryInvestment)
+    const { data: planningSumary, isLoading: isLoadingPlanning } = usePlanning(queryInvestment)
 
     const patrimonio = planningSumary?.posicaoAtualDaCarteiraEmCentavos ?? 0
     const ativosPlanejadosConsolidados = planningSumary?.ativosPlanejadosConsolidados ?? []

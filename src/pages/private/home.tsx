@@ -2,22 +2,19 @@ import CarteiraDeAlocacaoCompleta from "@/components/barra-alocacao";
 import { Display, DisplayBody, DisplayContent, DisplayHeader, DisplayItem, DisplayTitle } from "@/components/display";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { MoedaEmReal } from "@/components/moeda-percentual";
-import { AuthContext } from "@/contexts/auth.context";
 import { usePlanning } from "@/queries/planning";
 import { usePortifolio } from "@/queries/portifolio";
+import { removeAuthToken } from "@/repositories/localStorageAuth";
+import { queryClient } from "@/services/queryClient";
 import { dataChartMinhaCarteiraDeAtivosPlanejada, dataChartMinhaCarteiraDeAtivos } from "@/utils/assets.utils";
-import { useContext } from "react";
+import { showErrorToast } from "@/utils/toasts";
 import { useNavigate } from "react-router";
 
 export default function HomePage() {
 
-    const { loginResponse } = useContext(AuthContext)
-        const userId = loginResponse?.objetoResposta.id || ""
-        const token = loginResponse?.objetoResposta.token
-
         const navigate = useNavigate()
 
-        const { data: portifolioInfo, isLoading: isLoadingPortifolioInfo, isError: isErrorPortifolioInfo } = usePortifolio(userId, token)
+        const { data: portifolioInfo, isLoading: isLoadingPortifolioInfo, isError: isErrorPortifolioInfo, error: errorPortifolioInfo } = usePortifolio()
 
         const posicaoAtualEmCentavos = portifolioInfo?.posicaoAtualDaCarteiraEmCentavos ?? 0
         const resultadoEmCentavos = portifolioInfo?.resultadoDaCarteiraEmCentavos ?? 0
@@ -25,12 +22,25 @@ export default function HomePage() {
         const resultadoEhNegativo = parseFloat(resultadoPercentual ?? "0") < 0
         const resultadoEhZero = parseFloat(resultadoPercentual ?? "0") === 0
 
-        const { data: planningInfo, isLoading: isLoadingPlanningInfo, isError: isErrorPlanningInfo } = usePlanning(userId, 0, token)
+        const { data: planningInfo, isLoading: isLoadingPlanningInfo, isError: isErrorPlanningInfo, error: errorPlanningInfo } = usePlanning(0)
 
         const isLoading = isLoadingPortifolioInfo || isLoadingPlanningInfo
         const isError = isErrorPortifolioInfo || isErrorPlanningInfo
+        const error = errorPlanningInfo || errorPortifolioInfo
 
-        if(isError) return <p className="text-my-foreground-secondary p-6">Erro durante o carregamento!</p>
+        const handleLogout = () => {
+            removeAuthToken()
+            queryClient.clear()
+            navigate('/')
+        }
+
+        if(isError && error?.message) {
+            showErrorToast(error?.message)
+        }
+
+        if(error?.message === "O seu token expirou") {
+            handleLogout()
+        }
 
     return(
         <div className="flex gap-3 flex-wrap flex-1 w-full h-full text-my-foreground-secondary p-3 overflow-y-hidden">

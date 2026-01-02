@@ -2,10 +2,9 @@ import api from "./api"
 import { AxiosError } from "axios"
 
 const portifolioService = { 
-    getInfo: async (userId :string) => {
-        if(!userId) { throw new Error("Informe o ID do usuário") }
+    getInfo: async () => {
         try {
-            const response = await api.get(`/portifolio?userId=${userId}`)
+            const response = await api.get(`/portifolios`)
             
             return response.data
         } catch (error :unknown) {

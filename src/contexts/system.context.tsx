@@ -7,7 +7,11 @@ interface SystemProviderProps {
 
 interface SystemContextProps {
     tradeModality :TradeModality
-    setTradeModality :Dispatch<SetStateAction<TradeModality>>
+    setTradeModality :Dispatch<SetStateAction<TradeModality>>,
+    selectedDate :Date | undefined,
+    setSelectedDate :Dispatch<SetStateAction<Date | undefined>>
+    selectedYear :number,
+    setSelectedYear :Dispatch<SetStateAction<number>>
 }
 
 export const SystemContext = createContext({} as SystemContextProps)
@@ -15,10 +19,21 @@ export const SystemContext = createContext({} as SystemContextProps)
 export function SystemProvider({ children } :SystemProviderProps) {
 
     const [ tradeModality, setTradeModality ] = useState<TradeModality>("swing_trade")
+    const [ selectedDate, setSelectedDate ] = useState<Date | undefined>(new Date())
+    const [ selectedYear, setSelectedYear ] = useState<number>(0)
 
     const contextValue = useMemo(()=> ({
-        tradeModality, setTradeModality
-    }), [tradeModality, setTradeModality])
+        tradeModality, setTradeModality,
+        selectedDate, setSelectedDate,
+        selectedYear, setSelectedYear
+    }), [
+        tradeModality, 
+        setTradeModality,
+        selectedDate,
+        setSelectedDate,
+        selectedYear,
+        setSelectedYear
+    ]) 
 
     return(
         <SystemContext.Provider value={contextValue}>

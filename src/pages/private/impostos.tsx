@@ -1,11 +1,10 @@
-import MonthYearPicker from "@/components/calendar-impostos"
+import MonthPicker from "@/components/calendar-month-picker"
 import ComboboxTradeModality from "@/components/combobox-trade-modality"
 import { Display, DisplayBody, DisplayContent, DisplayItem, DisplayHeader, DisplayTitle, DisplayIcon } from "@/components/display"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { MoedaEmReal } from "@/components/moeda-percentual"
 import { TableTaxes } from "@/components/table-taxes"
 import { Button } from "@/components/ui/button"
-import { AuthContext } from "@/contexts/auth.context"
 import { SystemContext } from "@/contexts/system.context"
 import type { TradeModality } from "@/interfaces/orderBreakdown.interface"
 import type { ProcessFiscalResultResponse } from "@/interfaces/processFiscalResult.interface"
@@ -15,7 +14,7 @@ import { useProcessFiscalResult } from "@/queries/processFiscalResult"
 import { useTaxes } from "@/queries/taxes"
 import { formatPeriodoApuracaoToString } from "@/utils/formatters"
 import { showErrorToast, showSuccesToast } from "@/utils/toasts"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 
 export default function Impostos() {
 
@@ -24,15 +23,19 @@ export default function Impostos() {
         "day_trade": "Day Trade"
     }
 
-    const { loginResponse } = useContext(AuthContext)
-    const { tradeModality, setTradeModality } = useContext(SystemContext)
-    const userId = loginResponse?.objetoResposta.id || ""
+    const { 
+        tradeModality, 
+        setTradeModality,
+        selectedDate,
+        setSelectedDate,
+        selectedYear
+    } = useContext(SystemContext)
 
-    const [ selectedDate, setSelectedDate ] = useState<Date | undefined>(new Date())
+    // const [ selectedDate, setSelectedDate ] = useState<Date | undefined>(new Date())
     const selectedMonth = selectedDate ? selectedDate.getMonth() : undefined
-    const selectedYear = selectedDate ? selectedDate.getFullYear() : undefined
+    // const selectedYear = selectedDate ? selectedDate.getFullYear() : undefined
     
-    const { data: taxesInfo, isLoading: isLoadingTaxesInfo, isError: isErrorTaxesInfo } = useTaxes(userId, selectedYear, selectedMonth, tradeModality)
+    const { data: taxesInfo, isLoading: isLoadingTaxesInfo, isError: isErrorTaxesInfo } = useTaxes(selectedYear, selectedMonth, tradeModality)
     const { mutate: executeProcessFiscalResult } = useProcessFiscalResult()
 
     const receitaBrutaTotalEmCentavos = taxesInfo?.receitaBrutaTotalComVendaEmCentavos ?? 0
@@ -86,11 +89,11 @@ export default function Impostos() {
     ]
 
     const handleProcessFiscalResult = () => {
-        if(!userId || !selectedYear || !selectedMonth || !tradeModality) {
+        if(!selectedYear || !selectedMonth || !tradeModality) {
             throw new Error("Preencha todos os campos!")
         }
         
-        executeProcessFiscalResult({userId, selectedYear, selectedMonth, tradeModality}, {
+        executeProcessFiscalResult({selectedYear, selectedMonth, tradeModality}, {
             onSuccess: (processFiscalResult :ProcessFiscalResultResponse) => {
                 if(processFiscalResult.type === "DARF") {
                     showSuccesToast(`DARF de ${ modalities[processFiscalResult.data.modality as TradeModality]} para o período de apuração ${formatPeriodoApuracaoToString(processFiscalResult.data.periodoApuracao)} criada!`)
@@ -123,10 +126,9 @@ export default function Impostos() {
                     setTradeModality={setTradeModality}
                 />
 
-                <MonthYearPicker 
-                    date={selectedDate} 
-                    setDate={setSelectedDate} 
-                    startYear={2020}
+                <MonthPicker
+                    date={selectedDate}
+                    setDate={setSelectedDate}
                 />
 
                 {
@@ -174,7 +176,7 @@ export default function Impostos() {
                     id="processar-resultado-fiscal"
                     variant="outline"
                     className={cn(
-                        "w-full justify-center focus:!ring-[1px] text-my-foreground-secondary bg-my-background-secondary hover:bg-my-background-secondary hover:text-my-foreground-secondary border-0 cursor-pointer",
+                        "w-full justify-center focus:!ring-[1px] text-my-foreground-secondary bg-my-background-secondary hover:bg-my-background-secondary hover:brightness-125 hover:text-lime-base border-0 cursor-pointer",
                     )}
                     onClick={handleProcessFiscalResult}
                 >

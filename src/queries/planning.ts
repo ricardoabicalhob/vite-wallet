@@ -5,10 +5,10 @@ import planningService from "@/services/planningService"
 
 // type PlanningPayload = { userId :string, investment :number }
 
-export const usePlanning = (userId :string, investment :number) => {
+export const usePlanning = (investment :number) => {
     return useQuery<PlanningSumary>({
-        queryKey: planningKeys.list(userId, investment),
-        queryFn: ()=> planningService.getInfo(userId, investment),
+        queryKey: planningKeys.list(investment),
+        queryFn: ()=> planningService.getInfo(investment),
         staleTime: 1000 * 60 * 5,
     })
 }

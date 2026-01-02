@@ -20,8 +20,8 @@ export default function MyOrders() {
     const [ inputFilter, setInputFilter ] = useState<string>("")
     const [ year, setYear ] = useState<number>(0)
 
-    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrdersByYear(userId, year)
-    const { data: portifolioInfo, isLoading: isLoadingPortifolioInfo, isError: isErrorPortifolioInfo } = usePortifolio(userId)
+    const { data: ordens, isLoading: isLoadingOrdens, isError: isErrorOrdens } = useOrdersByYear(year)
+    const { data: portifolioInfo, isLoading: isLoadingPortifolioInfo, isError: isErrorPortifolioInfo } = usePortifolio()
 
     const orderListFiltered = filtarListaDeOrdens(inputFilter.toUpperCase(), ordens ?? [])
     const totalInvestidoEmCentavos = portifolioInfo?.totalInvestidoNaCarteiraEmCentavos ?? 0

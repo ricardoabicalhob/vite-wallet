@@ -2,9 +2,9 @@ import api from "./api"
 import { AxiosError } from "axios"
 
 const compensationService = { 
-    getCompensations: async (userId :string) => {
+    getCompensations: async () => {
         try {
-            const response = await api.get(`/compensacao?userId=${userId}`)
+            const response = await api.get(`/compensacoes`)
 
             return response.data
         } catch (error :unknown) {
@@ -26,9 +26,9 @@ const compensationService = {
         }
     },
 
-    getCompensationsByYear: async (userId :string, year :number) => {
+    getCompensationsByYear: async (year :number) => {
         try {
-            const response = await api.get(`/compensacao/ano?userId=${userId}&year=${year}`)
+            const response = await api.get(`/compensacoes/ano?year=${year}`)
 
             return response.data
         } catch (error :unknown) {
@@ -53,7 +53,7 @@ const compensationService = {
     deleteCompensation: async (id :string) => {
         if(!id) { throw new Error("Erro ao deletar a DARF") }
         try {
-            const response = await api.delete(`/compensacao?id=${id}`)
+            const response = await api.delete(`/compensacoes?id=${id}`)
 
             return response.data
         } catch (error :unknown) {

@@ -4,26 +4,26 @@ import { queryClient } from "@/services/queryClient"
 import type { OrderCreate, OrderPresenter, OrderToUpdate } from "@/interfaces/order.interface"
 import orderService from "@/services/orderService"
 
-export const useOrders = (userId :string) => {
+export const useOrders = () => {
     return useQuery<OrderPresenter[]>({
         queryKey: orderKeys.list(),
-        queryFn: ()=> orderService.getOrders(userId),
+        queryFn: ()=> orderService.getOrders(),
         staleTime: 1000 * 60 * 5
     })
 }
 
-export const useOrdersByYear= (userId :string, year :number) => {
+export const useOrdersByYear= (year :number) => {
     return useQuery<OrderPresenter[]>({
-        queryKey: orderKeys.getByUserIdAndYear(userId, year),
-        queryFn: ()=> orderService.getOrdersByYear(userId, year),
+        queryKey: orderKeys.getByUserIdAndYear(year),
+        queryFn: ()=> orderService.getOrdersByYear(year),
         staleTime: 1000 * 60 * 5
     })
 }
 
-export const useOrdersListByMonth = (userId :string, year :number, month :number) => {
+export const useOrdersListByMonth = (year :number, month :number) => {
     return useQuery<OrderPresenter[]>({
-        queryKey: orderKeys.listByMonth(userId, year, month),
-        queryFn: () => orderService.listByMonth(userId, year, month),
+        queryKey: orderKeys.listByMonth(year, month),
+        queryFn: () => orderService.listByMonth(year, month),
         staleTime: 1000 * 60 * 5
     })
 }

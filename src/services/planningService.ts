@@ -2,15 +2,14 @@ import api from "./api"
 import { AxiosError } from "axios"
 
 const planningService = { 
-    getInfo: async (userId :string, investment :number) => {
-        if(!userId) { throw new Error("Esperado um userId (string)") }
+    getInfo: async (investment :number) => {
         try {
-            const response = await api.get(`/planejamento?userId=${userId}&investment=${investment}`)
+            const response = await api.get(`/planejamentos?investment=${investment}`)
             return response.data
         } catch (error :unknown) {
+            
             if (error instanceof AxiosError) {
-                const data = error.response?.data
-
+                const data = error.response?.data.message
                 if (typeof data === 'string') {
                     throw new Error(data)
                 }

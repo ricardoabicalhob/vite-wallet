@@ -43,7 +43,7 @@ export function AssetLogo({
         <MiniLoadingSpinner
           isLoading
           size="sm"
-          className="absolute inset-0 m-auto text-lime-base/50"
+          className="inset-0 m-auto text-lime-base/50"
         />
       )}
 

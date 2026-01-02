@@ -6,7 +6,7 @@ const orderService = {
     createOrder: async (orderToCreate :OrderCreate) => {
         if(!orderToCreate) { throw new Error("Erro durante a criação da ordem") }
         try {
-            const response = await api.post('/ordem', orderToCreate)
+            const response = await api.post('/ordens', orderToCreate)
             
             return response.data as OrderPresenter
         } catch (error :unknown) {
@@ -31,7 +31,7 @@ const orderService = {
         if(!id) { throw new Error("Erro ao deletar a ordem") }
         
         try {
-            const response = await api.delete(`/ordem?id=${id}`)
+            const response = await api.delete(`/ordens?id=${id}`)
 
             return response.data
         } catch (error :unknown) {
@@ -55,7 +55,7 @@ const orderService = {
     updateOrder: async (orderToUpdate :OrderToUpdate) => {
         if(!orderToUpdate) { throw new Error("Erro ao atualizar a ordem") }
         try {
-            const response = await api.patch('/ordem', orderToUpdate)
+            const response = await api.patch('/ordens', orderToUpdate)
             
             return response.data as OrderPresenter
         } catch (error :unknown) {
@@ -76,10 +76,10 @@ const orderService = {
             throw new Error('Erro inesperado')
         }
     },
-    listByMonth: async (userId :string, year :number, month :number) => {
-        if(!userId || year === undefined || month === undefined) { throw new Error("ID do usuário, mês ou ano inválidos.") }
+    listByMonth: async (year :number, month :number) => {
+        if(year === undefined || month === undefined) { throw new Error("ID do usuário, mês ou ano inválidos.") }
         try {
-            const response = await api.get(`/ordem/mes?userId=${userId}&year=${year}&month=${month}`)
+            const response = await api.get(`/ordens/mes?year=${year}&month=${month}`)
 
             return response.data
         } catch (error :unknown) {
@@ -100,10 +100,9 @@ const orderService = {
             throw new Error('Erro inesperado')
         }
     },
-    getOrders: async (userId :string) => {
-        if(!userId) { throw new Error("Informe o ID do usuário") }
+    getOrders: async () => {
         try {
-            const response = await api.get(`/ordem?userId=${userId}`)
+            const response = await api.get(`/ordens`)
             return response.data || null
         } catch (error :unknown) {
             if (error instanceof AxiosError) {
@@ -124,10 +123,9 @@ const orderService = {
         }
     },
 
-    getOrdersByYear: async (userId :string, year :number) => {
-        if(!userId) { throw new Error("Informe o ID do usuário") }
+    getOrdersByYear: async (year :number) => {
         try {
-            const response = await api.get(`/ordem/ano?userId=${userId}&year=${year}`)
+            const response = await api.get(`/ordens/ano?year=${year}`)
             return response.data || null
         } catch (error :unknown) {
             if (error instanceof AxiosError) {

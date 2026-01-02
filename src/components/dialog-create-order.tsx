@@ -12,14 +12,13 @@ import { removeTrailingF } from "@/utils/assets.utils"
 import type { AssetType, OperationType, OrderCreate } from "@/interfaces/order.interface"
 import { showErrorToast, showSuccesToast } from "@/utils/toasts"
 import { useCreateOrder } from "@/queries/order"
-import { publicApi } from "@/services/api"
-import type { ApiResponse } from "@/interfaces/quote.interface"
 import { AxiosError } from "axios"
 import ComboboxAssetsForSale from "./combobox-assets-for-sale"
 import { useFocusOnOpen } from "@/hooks/useFocusOnOpen"
 import { useUpdateLogoOnSale } from "@/hooks/useUpdateLogoOnSale"
 import { useClearSymbolOnOperationChange } from "@/hooks/useClearSymbolOnOperationChange"
 import { formatCentavosToReal, parseInputToCentavos } from "@/utils/formatters"
+import { useValidateAssetSymbol } from "@/queries/asset"
 
 interface DialogCreateOrderProps {
     userId :string
@@ -42,11 +41,11 @@ export function DialogCreateOrder({
     const [ operationType, setOperationType ] = useState<"Compra" | "Venda">("Compra")
     const [ assetType, setAssetType ] = useState<"Acao" | "Fii" | "Cripto">("Acao")
     const [ centavosUnitPrice, setCentavosUnitPrice ] = useState<string>("")
-    const [ centavosCurrentPrice, setCentavosCurrentPrice ] = useState<number>(0)
 
     const assetSymbolInputRef = useRef<HTMLInputElement>(null)
 
     const { mutate: createOrder } = useCreateOrder()
+    const { mutate: validateAssetSymbol } = useValidateAssetSymbol()
 
 
     const handleChangeUnitPrice = (e :React.ChangeEvent<HTMLInputElement>) => {
@@ -61,26 +60,40 @@ export function DialogCreateOrder({
 
 
     async function validateSymbol(symbol :string) {
-        const token = import.meta.env.VITE_BRAPI_API_KEY
-
-        try {
-            // setIsValidatingAsset(true)
-            const response = await publicApi.get(`https://brapi.dev/api/quote/${symbol}?token=${token}`)
-            const data :ApiResponse = response.data
-
-            setAssetSymbol(data.results[0].symbol)
-            setAssetLogourl(data.results[0].logourl)
-            setCentavosCurrentPrice(data.results[0].regularMarketPrice * 100)
-            // setIsValidatingAsset(false)
-        } catch (error :unknown) {
-            if(error instanceof AxiosError) {
-                showErrorToast(error.response?.data.message)
+        
+        validateAssetSymbol(symbol, {
+            onSuccess: (validatedAsset) => {
+                setAssetSymbol(validatedAsset.symbol)
+                setAssetLogourl(validatedAsset.logoUrl)
+            },
+            onError: (error) => {
+                if(error instanceof AxiosError) {
+                    showErrorToast(error.response?.data.message)
+                }
                 setAssetSymbol("")
                 setAssetLogourl("")
-                setCentavosCurrentPrice(0)
+                showErrorToast(error.message)
             }
-            // setIsValidatingAsset(false)
-        }
+        })
+
+        // const token = import.meta.env.VITE_BRAPI_API_KEY
+
+        // try {
+        //     // setIsValidatingAsset(true)
+        //     const response = await publicApi.get(`https://brapi.dev/api/quote/${symbol}?token=${token}`)
+        //     const data :ApiResponse = response.data
+
+        //     setAssetSymbol(data.results[0].symbol)
+        //     setAssetLogourl(data.results[0].logourl)
+        //     // setIsValidatingAsset(false)
+        // } catch (error :unknown) {
+        //     if(error instanceof AxiosError) {
+        //         showErrorToast(error.response?.data.message)
+        //         setAssetSymbol("")
+        //         setAssetLogourl("")
+        //     }
+        //     // setIsValidatingAsset(false)
+        // }
     }
 
     function resetForm() {
@@ -93,7 +106,6 @@ export function DialogCreateOrder({
         setCentavosTaxes("0.00")
         setOperationType("Compra")
         setAssetType("Acao")
-        setCentavosCurrentPrice(0)
     }
 
     function handleSubmit(e :React.FormEvent) {
@@ -131,7 +143,7 @@ export function DialogCreateOrder({
 
     useFocusOnOpen(assetSymbolInputRef, isCreateDialogOpen)
 
-    useUpdateLogoOnSale(operationType, assetSymbol, assetsForSale, setAssetLogourl, setCentavosCurrentPrice)
+    useUpdateLogoOnSale(operationType, assetSymbol, assetsForSale, setAssetLogourl)
 
     useClearSymbolOnOperationChange(operationType, setAssetSymbol)
 
