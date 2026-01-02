@@ -176,7 +176,7 @@ export default function Impostos() {
                     id="processar-resultado-fiscal"
                     variant="outline"
                     className={cn(
-                        "w-full justify-center focus:!ring-[1px] text-my-foreground-secondary bg-my-background-secondary hover:bg-my-background-secondary hover:brightness-125 hover:text-lime-base border-0 cursor-pointer",
+                        "w-full justify-center focus:!ring-[1px] text-my-background-secondary bg-lime-base hover:bg-lime-base hover:brightness-110 border-0 cursor-pointer",
                     )}
                     onClick={handleProcessFiscalResult}
                 >
